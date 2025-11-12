@@ -1,4 +1,4 @@
-package enat.bank.User;
+package enat.bank.user;
 
 import enat.bank.role.Roles;
 import lombok.AllArgsConstructor;

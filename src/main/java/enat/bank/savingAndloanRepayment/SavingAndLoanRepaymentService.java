@@ -1,11 +1,20 @@
 package enat.bank.savingAndloanRepayment;
 
-import enat.bank.Utils.CommonService;
+import com.opencsv.CSVReader;
+import com.opencsv.exceptions.CsvException;
+import com.opencsv.exceptions.CsvValidationException;
+import enat.bank.exception.SavingAndLoanRepaymentSaveFileException;
+import enat.bank.saving.SavingDetails;
+import enat.bank.utils.CommonService;
 import enat.bank.exception.SavingAndLoanRepaymentsNotFoundException;
+import jakarta.transaction.Transactional;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.multipart.MultipartFile;
-import java.io.BufferedReader;
+import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
@@ -20,53 +29,70 @@ public class SavingAndLoanRepaymentService extends CommonService<SavingAndLoanRe
         this.savingAndLoanRepaymentRepository=savingAndLoanRepaymentRepository;
 
     }
-    public ResponseEntity<List<SavingAndLoanRepayment>> importCsvFile(MultipartFile file) {
+    public ResponseEntity<List<SavingAndLoanRepayment>> importCsv(MultipartFile file) {
+        List<SavingAndLoanRepayment> dataList = new ArrayList<>();
+        SavingDetails metaData=new SavingDetails();
+        try (CSVReader  reader = new CSVReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
+            int lineNumber=0;
+            boolean isFirst=true;
+            String[] fields;
 
-        List<SavingAndLoanRepayment> savingAndRepaymnts = new ArrayList<>();
-        try (BufferedReader reader = new BufferedReader(
-                new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
-
-            String line;
-            boolean isFirstLine = true;
+            metaData.setRecordCount((reader.readAll().size()));
 
 
+            while ((fields = reader.readNext()) != null) {
 
-            while ((line = reader.readLine()) != null) {
-                if (isFirstLine) { // Skip header
-                    isFirstLine = false;
+                lineNumber++;
+                if (fields.length < 4) {
+                    System.err.println("Skipping invalid line: " + lineNumber);
+                    continue;
+                }
+                if(isFirst){
+                    System.err.println("headers"+fields);
+                    isFirst=false;
                     continue;
                 }
 
-                String[] fields = line.split(",");
+                String employeeId = fields[0].trim();
+                String fullName = fields[1].trim();
+                Double craSaving = parseDoubleSafe(fields[2]);
+                Double crassLoanRepayment = parseDoubleSafe(fields[3]);
+                System.out.println("employee id..."+employeeId+"...crsSaving"+fields[2] + "...crsssloan"+fields[3]);
+                SavingAndLoanRepayment entity = SavingAndLoanRepayment.builder()
+                        .employeeId(employeeId)
+                        .fullName(fullName)
+                        .craSaving(craSaving)
+                        .crassLoanRepayment(crassLoanRepayment)
+                        .build();
 
-                // Assuming CSV has fullName,email,age
-                if (fields.length == 4) {
-                    SavingAndLoanRepayment savingAndLoanRepayment = SavingAndLoanRepayment.builder()
-                            .employeeId(fields[0].trim())
-                            .fullName(fields[1].trim())
-                            .craSaving(Integer.parseInt(fields[2].trim()))
-                            .crassLoanRepayment(Double.parseDouble(fields[3].trim()))
-                            .build();
-
-                    savingAndRepaymnts.add(savingAndLoanRepayment);
-                }
+                dataList.add(entity);
             }
 
-         savingAndLoanRepaymentRepository.saveAll(savingAndRepaymnts);
+            repository.saveAll(dataList);
+            System.out.println("Imported records: " + dataList.size());
 
-        } catch (Exception e) {
-            throw new SavingAndLoanRepaymentsNotFoundException("Failed to upload CSV: " + e.getMessage());
+        } catch (IOException | CsvValidationException e) {
+            throw new SavingAndLoanRepaymentSaveFileException("Failed to read CSV file: " + e.getMessage());
+        } catch (CsvException e) {
+            throw new RuntimeException(e);
         }
 
-  return ResponseEntity.ok(savingAndRepaymnts);
+        System.out.println("Totals Coloumns:" + metaData.getRecordCount());
+        return ResponseEntity.ok(dataList);
+    }
 
+    private Double parseDoubleSafe(String value) {
+        try {
+            return Double.parseDouble(value.replace(",", "").trim());
+        } catch (Exception e) {
+            return 0.0;
+        }
     }
 
     public SavingAndLoanRepayment findById(Long id,SavingAndLoanRepayment update){
 
         SavingAndLoanRepayment savingAndLoanRepayment=savingAndLoanRepaymentRepository.findById(id).orElseThrow(()->
                 new SavingAndLoanRepaymentsNotFoundException("SavingAndLoanRepayments record not found with this Id:.."+id));
-
         savingAndLoanRepayment.setCraSaving(update.getCraSaving());
         savingAndLoanRepayment.setCrassLoanRepayment(update.getCrassLoanRepayment());
         savingAndLoanRepayment.setFullName(update.getFullName());
@@ -74,7 +100,18 @@ public class SavingAndLoanRepaymentService extends CommonService<SavingAndLoanRe
 
     }
 
+    public Page<SavingAndLoanRepayment> findByEmployeeIds(String employeeId, Pageable pageable){
 
+        return  savingAndLoanRepaymentRepository.findByEmployeeId(employeeId ,pageable);
+
+    }
+
+    @Transactional
+    public ResponseEntity<List<SavingAndLoanRepayment>> deleteByEmployeeId(String employeeId) {
+       List<SavingAndLoanRepayment> d=savingAndLoanRepaymentRepository.deleteByEmployeeId(employeeId);
+
+       return  ResponseEntity.ok(d);
+    }
 
 
 

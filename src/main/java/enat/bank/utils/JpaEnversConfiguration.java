@@ -1,4 +1,4 @@
-package enat.bank.Utils;
+package enat.bank.utils;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.data.domain.AuditorAware;

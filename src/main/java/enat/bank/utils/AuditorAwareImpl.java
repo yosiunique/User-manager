@@ -1,4 +1,4 @@
-package enat.bank.Utils;
+package enat.bank.utils;
 
 import org.springframework.data.domain.AuditorAware;
 import org.springframework.security.core.Authentication;

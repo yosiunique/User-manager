@@ -1,4 +1,4 @@
-package enat.bank.Utils;
+package enat.bank.utils;
 import java.io.Serial;
 import java.io.Serializable;
 import java.time.LocalDateTime;

@@ -1,6 +1,6 @@
-package enat.bank.User;
+package enat.bank.user;
 
-import enat.bank.Utils.CommonJpaRepo;
+import enat.bank.utils.CommonJpaRepo;
 import org.springframework.stereotype.Repository;
 
 @Repository

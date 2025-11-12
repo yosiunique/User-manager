@@ -1,4 +1,4 @@
-package enat.bank.User;
+package enat.bank.user;
 
 import java.util.stream.Collectors;
 
@@ -15,7 +15,7 @@ public class UserMapper {
         dto.setEmail(user.getEmail());
         dto.setAttribute(user.getAttribute());
         dto.setEnable(user.getEnable());
-        dto.setRole(user.getRole());
+        dto.setRole(user.getRoles());
         return dto;
     }
 
@@ -30,7 +30,7 @@ public class UserMapper {
         user.setEmail(dto.getEmail());
         user.setAttribute(dto.getAttribute());
         user.setEnable(dto.getEnable());
-        user.setRole(dto.getRole());
+        user.setRoles(dto.getRole());
         return user;
     }
 

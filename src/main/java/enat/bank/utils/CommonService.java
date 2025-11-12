@@ -1,4 +1,5 @@
-package enat.bank.Utils;
+package enat.bank.utils;
+
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -9,9 +10,9 @@ import java.util.Optional;
 
 public abstract class CommonService<E, ID, D> {
 
-    protected final CommonJpaRepo<E, ID> repository;
+    protected  CommonJpaRepo<E, ID> repository;
 
-    protected CommonService(CommonJpaRepo<E, ID> repository) {
+    protected CommonService(CommonJpaRepo<E,ID> repository) {
         this.repository = repository;
     }
 

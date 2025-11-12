@@ -1,6 +1,6 @@
 package enat.bank.role;
 
-import enat.bank.Utils.CommonJpaRepo;
+import enat.bank.utils.CommonJpaRepo;
 import org.springframework.stereotype.Repository;
 
 @Repository

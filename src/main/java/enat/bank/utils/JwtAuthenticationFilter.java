@@ -1,7 +1,7 @@
-package enat.bank.Utils;
+package enat.bank.utils;
 
 
-import enat.bank.User.CustomUserDetailsService;
+import enat.bank.user.CustomUserDetailsService;
 import jakarta.servlet.*;
 import jakarta.servlet.http.*;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -25,7 +25,7 @@ public class JwtAuthenticationFilter extends OncePerRequestFilter {
 
         String path = request.getServletPath();
         // Skip Swagger and OpenAPI endpoints
-        if (path.startsWith("/v3/api-docs") || path.startsWith("/swagger-ui") || path.equals("/swagger-ui.html")) {
+        if (path.startsWith("/api-docs") || path.startsWith("/swagger-ui") || path.equals("/swagger-ui.html")) {
             filterChain.doFilter(request, response);
             return;
         }

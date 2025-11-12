@@ -1,7 +1,7 @@
-package enat.bank.User;
+package enat.bank.user;
 
 import com.fasterxml.jackson.annotation.JsonManagedReference;
-import enat.bank.Utils.Auditable;
+import enat.bank.utils.Auditable;
 import enat.bank.role.Roles;
 import jakarta.persistence.*;
 import lombok.*;
@@ -32,5 +32,5 @@ public class User extends Auditable {
     @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
     @JsonManagedReference
     @ToString.Exclude
-    private List<Roles> role;
+    private List<Roles> roles;
 }

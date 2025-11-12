@@ -1,7 +1,7 @@
 package enat.bank.role;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import enat.bank.User.User;
+import enat.bank.user.User;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -24,6 +24,6 @@ public class Roles {
     @ManyToOne
     @JoinColumn(name="user_id" ,nullable = false)
     @JsonBackReference
-    @ToString.Exclude
+//    @ToString.Exclude
     private User user;
 }

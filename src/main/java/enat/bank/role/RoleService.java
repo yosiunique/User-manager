@@ -1,9 +1,8 @@
 package enat.bank.role;
 
 
-import enat.bank.Utils.CommonService;
+import enat.bank.utils.CommonService;
 import enat.bank.exception.RolesNotFoundException;
-import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
 

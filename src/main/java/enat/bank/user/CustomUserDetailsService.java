@@ -1,4 +1,4 @@
-package enat.bank.User;
+package enat.bank.user;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.security.core.userdetails.*;

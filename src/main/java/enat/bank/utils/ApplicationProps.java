@@ -1,4 +1,4 @@
-package enat.bank.Utils;
+package enat.bank.utils;
 
 import lombok.AllArgsConstructor;
 import lombok.Data;

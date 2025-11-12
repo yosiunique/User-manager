@@ -1,7 +1,7 @@
-package enat.bank.Security;
-import enat.bank.User.CustomUserDetailsService;
-import enat.bank.Utils.ApplicationProps;
-import enat.bank.Utils.JwtAuthenticationFilter;
+package enat.bank.security;
+import enat.bank.user.CustomUserDetailsService;
+import enat.bank.utils.ApplicationProps;
+import enat.bank.utils.JwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.*;
 import org.springframework.security.authentication.*;
@@ -41,9 +41,10 @@ public class SecurityConfig {
                 .csrf().disable()     // Disable CSRF for API
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
-                                "/v3/api-docs/**",
+                                "/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
+                                "/swagger-ui/index.html",
                                 "/api/auth/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

@@ -1,6 +1,6 @@
 package enat.bank.role;
 
-import enat.bank.Utils.CommonJpaRepo;
+import enat.bank.utils.CommonJpaRepo;
 
 public interface RolesTypesRepository extends CommonJpaRepo<RoleTypes ,Long> {
 }
