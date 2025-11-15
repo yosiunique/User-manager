@@ -1,4 +1,4 @@
-package enat.bank.savingAndloanRepayment;
+package enat.bank.loansRepayments;
 
 import enat.bank.utils.Auditable;
 import jakarta.persistence.*;
@@ -10,14 +10,13 @@ import lombok.*;
 @NoArgsConstructor
 @Entity
 @Builder
-@Table(name="saving_and_loan_repayment")
-public class SavingAndLoanRepayment  extends Auditable {
+@Table(name="loan_repayments")
+public class LoanRepayment extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String employeeId;
     private String fullName;
-    private double   craSaving;
     private double  crassLoanRepayment;
 
 

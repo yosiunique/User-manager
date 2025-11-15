@@ -1,5 +1,6 @@
 package enat.bank.role.roleTypes;
 
+import enat.bank.exception.RolesNotFoundException;
 import enat.bank.role.RoleTypes;
 import enat.bank.utils.Common;
 import io.swagger.v3.oas.annotations.parameters.RequestBody;
@@ -20,6 +21,14 @@ public class RoleTypessController implements Common<RoleTypes,RoleTypes,RoleType
     private final RoleTypesServices roleService;
     @Override
     public ResponseEntity<RoleTypes> create(@RequestBody  RoleTypes roleTypes) {
+
+        if (roleService.isRole(roleTypes.getRole())){
+
+            throw  new RolesNotFoundException("this role is already created ");
+        }
+
+
+
         return roleService.create(roleTypes);
     }
 

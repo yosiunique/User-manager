@@ -1,5 +1,6 @@
 package enat.bank.role;
 
+import enat.bank.exception.RolesNotFoundException;
 import enat.bank.utils.Common;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -28,6 +29,12 @@ public class RoleController implements Common<Roles, Roles, Roles, Roles> {
             description = "Creates a new role in the system."
     )
     public ResponseEntity<Roles> create(@RequestBody Roles roles) {
+
+        if(roleService.isAssigned(roles.getRoleTypes().getId() ,roles.getUser().getId())){
+            throw  new RolesNotFoundException("this role already assinged !");
+        }
+
+
         return roleService.create(roles);
     }
 

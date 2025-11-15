@@ -5,4 +5,5 @@ import org.springframework.stereotype.Repository;
 
 @Repository
 public interface RolesRepository extends CommonJpaRepo<Roles ,Long > {
+    Roles  findByRoleTypes_IdAndUser_Id(Long roleId,Long userId);
 }

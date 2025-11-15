@@ -1,4 +1,4 @@
-package enat.bank.savingAndloanRepayment;
+package enat.bank.saving;
 
 import enat.bank.utils.Common;
 import io.swagger.v3.oas.annotations.Operation;
@@ -16,59 +16,59 @@ import java.util.Optional;
 @RequestMapping("api/saving-and-loan-repayments")
 @RequiredArgsConstructor
 @Tag(name = "Saving and Loan Repayment", description = "Manage saving and loan repayment records and CSV import.")
-public class SavingAndLoanRepaymentController implements Common<SavingAndLoanRepayment, String, String, SavingAndLoanRepayment> {
+public class SavingController implements Common<Saving, String, String, Saving> {
 
-    private final SavingAndLoanRepaymentService savingAndLoanRepaymentService;
+    private final SavingService savingService;
 
     @Override
     @Operation(summary = "Create repayment record", description = "Creates a new saving or loan repayment record.")
-    public ResponseEntity<SavingAndLoanRepayment> create(@RequestBody SavingAndLoanRepayment savingAndLoanRepayment) {
-        return savingAndLoanRepaymentService.create(savingAndLoanRepayment);
+    public ResponseEntity<Saving> create(@RequestBody Saving saving) {
+        return savingService.create(saving);
     }
 
     @Override
     @Operation(summary = "Update repayment record", description = "Updates an existing repayment record by ID.")
-    public ResponseEntity<SavingAndLoanRepayment> update(
-            @PathVariable Long id, @RequestBody SavingAndLoanRepayment savingAndLoanRepayment) {
-        return savingAndLoanRepaymentService.update(
-                savingAndLoanRepaymentService.findById(id, savingAndLoanRepayment), id);
+    public ResponseEntity<Saving> update(
+            @PathVariable Long id, @RequestBody Saving saving) {
+        return savingService.update(
+                savingService.findById(id, saving), id);
     }
 
     @Override
     @Operation(summary = "Delete repayment record", description = "Deletes a repayment record by ID.")
     public void delete(@PathVariable Long id) {
-        savingAndLoanRepaymentService.delete(id);
+        savingService.delete(id);
     }
 
     @Override
     @Operation(summary = "Get repayment record by ID", description = "Fetches a single repayment record by ID.")
-    public Optional<SavingAndLoanRepayment> getById(@PathVariable Long id) {
-        return savingAndLoanRepaymentService.getById(id);
+    public Optional<Saving> getById(@PathVariable Long id) {
+        return savingService.getById(id);
     }
 
     @Override
     @Operation(summary = "Get all repayments", description = "Retrieves all repayment records with pagination.")
-    public Page<SavingAndLoanRepayment> getAllPageable(Pageable pageable, String name) {
-        return savingAndLoanRepaymentService.getAllPageable(pageable);
+    public Page<Saving> getAllPageable(Pageable pageable, String name) {
+        return savingService.getAllPageable(pageable);
     }
 
 
     @GetMapping("search-by-employee-id/{employeeId}")
-    public Page<SavingAndLoanRepayment>  findByEmployeeIds(@PathVariable("employeeId") String employeeId ,Pageable pageable){
-        return savingAndLoanRepaymentService.findByEmployeeIds(employeeId,pageable);
+    public Page<Saving>  findByEmployeeIds(@PathVariable("employeeId") String employeeId , Pageable pageable){
+        return savingService.findByEmployeeIds(employeeId,pageable);
 
     }
 
     @DeleteMapping("delete-by-employee-id/{employeeId}")
-    public ResponseEntity<List<SavingAndLoanRepayment>> deleteByEmployeeId(@PathVariable("employeeId") String employeeId) {
-        return savingAndLoanRepaymentService.deleteByEmployeeId(employeeId);
+    public ResponseEntity<List<Saving>> deleteByEmployeeId(@PathVariable("employeeId") String employeeId) {
+        return savingService.deleteByEmployeeId(employeeId);
     }
 
 
     @PostMapping("import-csv")
     @Operation(summary = "Import repayment data from CSV", description = "Uploads and imports repayment records from a CSV file.")
-    public ResponseEntity<List<SavingAndLoanRepayment>> importCsvFile(@RequestParam("file") MultipartFile file) {
-        return savingAndLoanRepaymentService.importCsv(file);
+    public ResponseEntity<List<Saving>> importCsvFile(@RequestParam("file") MultipartFile file) {
+        return savingService.importCsv(file);
     }
 
 

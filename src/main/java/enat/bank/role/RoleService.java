@@ -24,6 +24,17 @@ public class RoleService extends CommonService<Roles ,Long ,Roles> {
         return exist;
     }
 
+    Boolean isAssigned(Long roleId,Long userId){
+        Roles roles=this.rolesRepository.findByRoleTypes_IdAndUser_Id(roleId ,userId);
+
+        if(roles !=null){
+            return  true;
+
+        }
+
+        return  false;
+    }
+
 
 
 }
