@@ -25,7 +25,7 @@ pipeline {
         stage("Build Docker") {
             steps {
                 script {
-                    docker.build("registry:5000/saving-loan-repayments:${TAG}")
+                    docker.build("registry:5000/savingandLoan-repayments:${TAG}")
                 }
             }
         }
