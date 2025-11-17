@@ -127,5 +127,10 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
 
 
 
+    public Double findTotalCraLoanRepaymenets(String employeeId){
+
+        return loanRepaymentRepository.findTotalLoanRepaymentByEmployeeId(employeeId);
+    }
+
 
 }

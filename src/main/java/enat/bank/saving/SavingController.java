@@ -72,4 +72,11 @@ public class SavingController implements Common<Saving, String, String, Saving> 
     }
 
 
+    @GetMapping("total-cra-saving/{employeeId}")
+    public Double findTotalCraSaving(@PathVariable("employeeId") String employeeId){
+
+        return savingService.findTotalCraSaving(employeeId);
+    }
+
+
 }

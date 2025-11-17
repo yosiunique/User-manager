@@ -73,4 +73,11 @@ public class LoanRepaymentController implements Common<LoanRepayment, String, St
     }
 
 
+    @GetMapping("total-cra-loan-repayments/{employeeId}")
+
+    public Double findTotalCraLoanRepayemenst(@PathVariable("employeeId") String employeeId){
+        return loanRepaymentService.findTotalCraLoanRepaymenets(employeeId);
+    }
+
+
 }

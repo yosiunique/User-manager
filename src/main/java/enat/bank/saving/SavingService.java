@@ -126,7 +126,12 @@ public class SavingService extends CommonService<Saving,Long,String> {
        return  ResponseEntity.ok(d);
     }
 
+    public Double findTotalCraSaving(String employeeId)
+    {
 
+        return savingRepository.findTotalSavingByEmployeeId(employeeId);
+
+    }
 
 
 }
