@@ -44,6 +44,8 @@ pipeline {
                  expression {
                            return env.BRANCH_NAME ==~ /(feature|develop)\/.*/
                        }
+
+                       branch "develop"
             }
             steps {
                 sshagent(['enat-remedy-development']) {
