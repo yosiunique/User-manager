@@ -49,7 +49,14 @@ pipeline {
             }
             steps {
                 sshagent(['enat-remedy-development']) {
-                    sh 'ssh -o StrictHostKeyChecking=no -l  ${TEST_SERVER_USERNAME} ${TEST_SERVER_ADDRESS} "docker stop loan-repayment| true; docker rm loan-repayment| true; docker run -p 8061:8080 -v /mnt/loan:/var/storage -e "SPRING_PROFILES_ACTIVE=develop" -d --name aloan-repayment ${DOCKER_PRIVATE_REGISTRY}/loan-repayment:${TAG}"'
+                 ssh -o StrictHostKeyChecking=no -l  ${TEST_SERVER_USERNAME} ${TEST_SERVER_ADDRESS} \
+                 "docker stop aloan-repayment || true; \
+                 docker rm aloan-repayment || true; \
+                 docker run -p 8061:8080 \
+                   -v /mnt/loan:/var/storage \
+                   -e SPRING_PROFILES_ACTIVE=develop \
+                   -d --name aloan-repayment \
+                   ${DOCKER_PRIVATE_REGISTRY}/loan-repayment:${TAG}"
                 }
             }
         }
