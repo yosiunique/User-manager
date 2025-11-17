@@ -25,7 +25,7 @@ pipeline {
         stage("Build Docker") {
             steps {
                 script {
-                    docker.build("registry:5000/savingandLoan-repayments:${TAG}")
+                    docker.build("registry:5000/loan-repayment:${TAG}")
                 }
             }
         }
@@ -33,8 +33,8 @@ pipeline {
             steps {
                 script {
                     docker.withRegistry("http://registry:5000") {
-                        docker.image("registry:5000/saving-loan-repayments:${TAG}").push()
-                        docker.image("registry:5000/saving-loan-repayments:${TAG}").push("latest")
+                        docker.image("registry:5000/loan-repayment:${TAG}").push()
+                        docker.image("registry:5000/loan-repayment:${TAG}").push("latest")
                     }
                 }
             }
@@ -47,7 +47,7 @@ pipeline {
             }
             steps {
                 sshagent(['enat-remedy-development']) {
-                    sh 'ssh -o StrictHostKeyChecking=no -l  ${TEST_SERVER_USERNAME} ${TEST_SERVER_ADDRESS} "docker stop saving-loan-repayments| true; docker rm saving-loan-repayments | true; docker run -p 8061:8080   -e "SPRING_PROFILES_ACTIVE=develop" -d --name saving-loan-repayments ${DOCKER_PRIVATE_REGISTRY}/share-holder:${TAG}"'
+                    sh 'ssh -o StrictHostKeyChecking=no -l  ${TEST_SERVER_USERNAME} ${TEST_SERVER_ADDRESS} "docker stop loan-repayment| true; docker rm loan-repayment| true; docker run -p 8061:8080 -v /mnt/loan:/var/storage -e "SPRING_PROFILES_ACTIVE=develop" -d --name aloan-repayment ${DOCKER_PRIVATE_REGISTRY}/loan-repayment:${TAG}"'
                 }
             }
         }
@@ -57,7 +57,7 @@ pipeline {
             }
             steps {
                 sshagent(['enat-remedy-production']) {
-                    sh 'ssh -o StrictHostKeyChecking=no -l  ${PRODUCTION_SERVER_USERNAME} ${PRODUCTION_SERVER_ADDRESS} "docker stop share-holder | true;     docker rm saving-loan-repayments | true;     docker run -p 8061:8080  -e "SPRING_PROFILES_ACTIVE=live" -d --name saving-loan-repayments ${DOCKER_PRIVATE_REGISTRY}/share-holder:${TAG}"'
+                    sh 'ssh -o StrictHostKeyChecking=no -l  ${PRODUCTION_SERVER_USERNAME} ${PRODUCTION_SERVER_ADDRESS} "docker stop loan-repayment | true;     docker rm loan-repayment | true;     docker run -p 8060:8080 -v /mnt/loan:/var/storage -e "SPRING_PROFILES_ACTIVE=live" -d --name loan-repayment ${DOCKER_PRIVATE_REGISTRY}/loan-repayment:${TAG}"'
                 }
             }
         }
