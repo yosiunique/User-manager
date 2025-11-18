@@ -77,6 +77,11 @@ public class SavingController implements Common<Saving, String, String, Saving> 
 
         return savingService.findTotalCraSaving(employeeId);
     }
+    @GetMapping("count")
+    public Double sumAllSaving(){
+
+        return savingService.sumAllSaving();
+    }
 
 
 }

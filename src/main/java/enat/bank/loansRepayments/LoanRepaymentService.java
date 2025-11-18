@@ -132,5 +132,9 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
         return loanRepaymentRepository.findTotalLoanRepaymentByEmployeeId(employeeId);
     }
 
+  public Double  sumAllLoanRepayments(){
+
+        return loanRepaymentRepository.sumCrassLoanRepayment();
+  }
 
 }

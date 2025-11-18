@@ -79,5 +79,10 @@ public class LoanRepaymentController implements Common<LoanRepayment, String, St
         return loanRepaymentService.findTotalCraLoanRepaymenets(employeeId);
     }
 
+    @GetMapping("count")
+    public Double countAllLoanRepayments(){
+        return loanRepaymentService.sumAllLoanRepayments();
+    }
+
 
 }

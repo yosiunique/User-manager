@@ -15,7 +15,8 @@ public interface LoanRepaymentRepository extends CommonJpaRepo<LoanRepayment,Lon
     List<LoanRepayment> deleteByEmployeeId(String employeeId);
     @Query("SELECT SUM(l.crassLoanRepayment) FROM LoanRepayment l WHERE l.employeeId = :employeeId")
     Double findTotalLoanRepaymentByEmployeeId(@Param("employeeId") String employeeId);
-
+    @Query("SELECT SUM(l.crassLoanRepayment) FROM LoanRepayment l")
+    Double sumCrassLoanRepayment();
 
 
 }

@@ -142,6 +142,11 @@ public class AdminController implements Common<User, String, String, UserDto> {
 
  }
 
+ @GetMapping("count")
+    public Long countAllUsers(){
+
+        return adminService.countAllUsers();
+ }
 
 
 

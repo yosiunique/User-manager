@@ -134,4 +134,9 @@ public class SavingService extends CommonService<Saving,Long,String> {
     }
 
 
+    public Double  sumAllSaving(){
+        return savingRepository.sumCraSaving();
+    }
+
+
 }
