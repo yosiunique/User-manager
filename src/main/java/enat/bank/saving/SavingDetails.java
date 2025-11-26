@@ -21,6 +21,7 @@ public class SavingDetails extends Auditable{
     private String filePath;
     private Long fileSize;
     private String fileType;
+    private LocalDate forMonth;
     private LocalDateTime uploadDate;
     private String uploadedBy;
     private Integer recordCount;

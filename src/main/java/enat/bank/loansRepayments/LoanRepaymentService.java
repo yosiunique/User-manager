@@ -2,6 +2,7 @@ package enat.bank.loansRepayments;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
+import enat.bank.Employee.Employee;
 import enat.bank.exception.SavingAndLoanRepaymentSaveFileException;
 import enat.bank.exception.SavingAndLoanRepaymentsNotFoundException;
 import enat.bank.utils.CommonService;
@@ -55,9 +56,10 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
                 String employeeId = fields[0].trim();
                 String fullName = fields[1].trim();
                 Double crassLoanRepayment = parseDoubleSafe(fields[2]);
-
+                Employee employee=new Employee();
+                employee.setId(Long.valueOf(employeeId));
                 LoanRepayment entity = LoanRepayment.builder()
-                        .employeeId(employeeId)
+                        .employee(employee)
                         .fullName(fullName)
                         .crassLoanRepayment(crassLoanRepayment)
                         .build();
@@ -112,22 +114,22 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
 
     }
 
-    public Page<LoanRepayment> findByEmployeeIds(String employeeId, Pageable pageable){
+    public Page<LoanRepayment> findByEmployeeIds(Long  employeeId, Pageable pageable){
 
-        return  loanRepaymentRepository.findByEmployeeId(employeeId ,pageable);
+        return  loanRepaymentRepository.findByEmployee_Id(employeeId ,pageable);
 
     }
 
     @Transactional
-    public ResponseEntity<List<LoanRepayment>> deleteByEmployeeId(String employeeId) {
-       List<LoanRepayment> d= loanRepaymentRepository.deleteByEmployeeId(employeeId);
+    public ResponseEntity<List<LoanRepayment>> deleteByEmployeeId(Long employeeId) {
+       List<LoanRepayment> d= loanRepaymentRepository.deleteByEmployee_Id(employeeId);
 
        return  ResponseEntity.ok(d);
     }
 
 
 
-    public Double findTotalCraLoanRepaymenets(String employeeId){
+    public Double findTotalCraLoanRepaymenets(Long  employeeId){
 
         return loanRepaymentRepository.findTotalLoanRepaymentByEmployeeId(employeeId);
     }

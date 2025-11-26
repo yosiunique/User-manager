@@ -74,7 +74,6 @@ public class AuthController {
 
 
         User userDetails=userRepository.findByUserName(user.getUserName());
-
         String token = jwtService.generateToken(userDetails);
         return Map.of("token", token);
     }

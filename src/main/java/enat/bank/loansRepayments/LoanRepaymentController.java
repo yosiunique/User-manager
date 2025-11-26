@@ -55,13 +55,13 @@ public class LoanRepaymentController implements Common<LoanRepayment, String, St
 
 
     @GetMapping("search-by-employee-id/{employeeId}")
-    public Page<LoanRepayment>  findByEmployeeIds(@PathVariable("employeeId") String employeeId , Pageable pageable){
+    public Page<LoanRepayment>  findByEmployeeIds(@PathVariable("employeeId") Long  employeeId , Pageable pageable){
         return loanRepaymentService.findByEmployeeIds(employeeId,pageable);
 
     }
 
     @DeleteMapping("delete-by-employee-id/{employeeId}")
-    public ResponseEntity<List<LoanRepayment>> deleteByEmployeeId(@PathVariable("employeeId") String employeeId) {
+    public ResponseEntity<List<LoanRepayment>> deleteByEmployeeId(@PathVariable("employeeId") Long  employeeId) {
         return loanRepaymentService.deleteByEmployeeId(employeeId);
     }
 
@@ -75,7 +75,7 @@ public class LoanRepaymentController implements Common<LoanRepayment, String, St
 
     @GetMapping("total-cra-loan-repayments/{employeeId}")
 
-    public Double findTotalCraLoanRepayemenst(@PathVariable("employeeId") String employeeId){
+    public Double findTotalCraLoanRepayemenst(@PathVariable("employeeId") Long  employeeId){
         return loanRepaymentService.findTotalCraLoanRepaymenets(employeeId);
     }
 

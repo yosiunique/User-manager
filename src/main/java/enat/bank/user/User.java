@@ -29,8 +29,8 @@ public class User extends Auditable {
     private  Boolean enable;
     private  Boolean set_;
     private  Boolean reset;
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
-    @JsonManagedReference
-    @ToString.Exclude
-    private List<Roles> roles;
+//    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,orphanRemoval = true)
+//    @JsonManagedReference
+//    @ToString.Exclude
+//    private List<Roles> roles;
 }

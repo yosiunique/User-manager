@@ -11,10 +11,10 @@ import java.util.List;
 
 @Repository
 public interface LoanRepaymentRepository extends CommonJpaRepo<LoanRepayment,Long> {
-    Page<LoanRepayment> findByEmployeeId(String employeeId , Pageable pageable);
-    List<LoanRepayment> deleteByEmployeeId(String employeeId);
-    @Query("SELECT SUM(l.crassLoanRepayment) FROM LoanRepayment l WHERE l.employeeId = :employeeId")
-    Double findTotalLoanRepaymentByEmployeeId(@Param("employeeId") String employeeId);
+    Page<LoanRepayment> findByEmployee_Id(Long  employeeId , Pageable pageable);
+    List<LoanRepayment> deleteByEmployee_Id(Long  employeeId);
+    @Query("SELECT SUM(l.crassLoanRepayment) FROM LoanRepayment l WHERE l.employee.id = :employeeId")
+    Double findTotalLoanRepaymentByEmployeeId(@Param("employeeId") Long  employeeId);
     @Query("SELECT SUM(l.crassLoanRepayment) FROM LoanRepayment l")
     Double sumCrassLoanRepayment();
 
