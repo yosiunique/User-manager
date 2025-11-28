@@ -5,9 +5,12 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -17,7 +20,7 @@ public class EmployeeController implements Common<Employee ,String,String,Employ
     private final EmployeeService employeeService;
     @Override
     public ResponseEntity<Employee> create(Employee employee) {
-        if(employeeService.findByEmployeeId(employee.getId()).isPresent()) {
+        if(employeeService.findByEmployeeIdAndStatus(employee.getEmployeeId(),employee.getStatus()).isPresent()) {
 
             throw new RuntimeException("This Employee Already Created !");
         }
@@ -46,4 +49,12 @@ public class EmployeeController implements Common<Employee ,String,String,Employ
     public Page<Employee> getAllPageable(Pageable pageable, String name) {
         return employeeService.getAllPageable(pageable);
     }
+
+    @GetMapping("/{employeeId}")
+    public List<Employee> getByEmployeeId(@PathVariable("employeeId")Long employeeId){
+
+        return employeeService.findByEmployeeId(employeeId);
+    }
+
+
 }

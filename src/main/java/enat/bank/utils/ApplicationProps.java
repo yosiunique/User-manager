@@ -20,5 +20,8 @@ public class ApplicationProps {
    private   List<String>  allowedOrigin;
    private  String jwt_secret_key;
    private String  jwt_expiration_time;
+   private double   annualInterset;
+   private double  period;
+   private Integer annualPeriod;
 
 }

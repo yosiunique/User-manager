@@ -5,6 +5,8 @@ import enat.bank.utils.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
 
+import java.time.LocalDate;
+
 @EqualsAndHashCode(callSuper = true)
 @Data
 @AllArgsConstructor
@@ -20,7 +22,11 @@ public class LoanRepayment extends Auditable {
     @JoinColumn(name="employee_id")
     private Employee employee;
     private String fullName;
+    private double principal;
+    private double interset;
+    private LocalDate forMonth;
     private double  crassLoanRepayment;
+
 
 
 }

@@ -27,7 +27,7 @@ public class JwtService {
     public String generateToken(User user) {
         return Jwts.builder()
                 .setSubject(user.getUserName())
-                .addClaims(Map.of("roles", "user.getRoles()"))
+                .addClaims(Map.of("roles", user.getRoles()))
                 .addClaims(Map.of("attribute",user.getAttribute()))
                 .addClaims(Map.of("reset",user.getReset()))
                 .addClaims(Map.of("enable",user.getEnable()))

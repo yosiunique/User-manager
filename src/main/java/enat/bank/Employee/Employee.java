@@ -15,8 +15,11 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class Employee extends Auditable {
     @Id
-    @Column(nullable = false)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
+    @Column(nullable=false)
+    private Long employeeId;
+    @Column(nullable = false)
     private String employeeFullName;
     @Column(nullable = false)
     private LocalDate effectiveDate;
@@ -25,7 +28,15 @@ public class Employee extends Auditable {
     @Convert(converter = StatusConverter.class)
     private  Status status;
     @Column(nullable = false)
+    private Double emi;
+    @Column(nullable = false)
     private Long loanId;
+    @Column(nullable = false)
+    private  double annualInterest;
+    @Column(nullable = false)
+    private double  period;
+    @Column(nullable = false)
+    private double firstOutStanding;
 
 
 }

@@ -3,6 +3,7 @@ package enat.bank.Employee;
 import enat.bank.utils.CommonService;
 import org.springframework.stereotype.Service;
 
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -27,9 +28,14 @@ public class EmployeeService extends CommonService<Employee ,Long, Employee> {
     }
 
 
-    public Optional<Employee>   findByEmployeeId(Long  employeeId){
+    public Optional<Employee>   findByEmployeeIdAndStatus(Long  employeeId ,Status status){
 
-        return  employeeRepository.findById(employeeId);
+        return  employeeRepository.findByEmployeeIdAndStatus(employeeId ,status);
 
     }
+    public List<Employee> findByEmployeeId(Long employeeId){
+
+        return  employeeRepository.findByEmployeeId(employeeId);
+    }
+
 }

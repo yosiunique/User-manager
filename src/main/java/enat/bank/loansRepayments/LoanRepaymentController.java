@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -68,8 +69,8 @@ public class LoanRepaymentController implements Common<LoanRepayment, String, St
 
     @PostMapping("import-csv")
     @Operation(summary = "Import repayment data from CSV", description = "Uploads and imports repayment records from a CSV file.")
-    public ResponseEntity<List<LoanRepayment>> importCsvFile(@RequestParam("file") MultipartFile file) {
-        return loanRepaymentService.importCsv(file);
+    public ResponseEntity<List<LoanRepayment>> importCsvFile(@RequestParam("file") MultipartFile file, @RequestParam("forMonth")LocalDate forMonth) {
+        return loanRepaymentService.importCsv(file,forMonth);
     }
 
 
