@@ -4,6 +4,7 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import enat.bank.Employee.Employee;
 import enat.bank.Employee.EmployeeRepository;
+import enat.bank.Employee.Status;
 import enat.bank.exception.LoanRepaymentsException;
 import enat.bank.exception.SavingAndLoanRepaymentSaveFileException;
 import enat.bank.exception.SavingAndLoanRepaymentsNotFoundException;
@@ -77,13 +78,16 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
                 String employeeId = fields[0].trim();
                 String fullName = fields[1].trim();
                 Double crassLoanRepayment = parseDoubleSafe(fields[2]);
-                Employee employee=employeeRepository.findById(Long.valueOf(employeeId))
+                Employee employee=employeeRepository.findByEmployeeIdAndStatus(Long.valueOf(employeeId), Status.ACTIVE)
                         .orElseThrow(()-> new LoanRepaymentsException("Employee Not Found with in this ID...."+employeeId));
                  double rate = applicationProps.getAnnualInterset() / applicationProps.getAnnualPeriod();
                  double emi=0;
                  double interset=0;
                  double principal=0;
                  double remainningBalance=0;
+                 if (employee.getOutStanding()<=0){
+                     throw new LoanRepaymentsException("This Loan Repayments Completed  !");
+                 }
                if(employee.getEmi()==0) {
 
                      emi = (employee.getOutStanding() * rate * (Math.pow(1 + rate, applicationProps.getPeriod()))) /
@@ -177,10 +181,10 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
     }
 
     @Transactional
-    public ResponseEntity<List<LoanRepayment>> deleteByEmployeeId(Long employeeId) {
-       List<LoanRepayment> d= loanRepaymentRepository.deleteByEmployee_Id(employeeId);
+    public void  deleteByEmployeeId(Long employeeId) {
+      loanRepaymentRepository.deleteByEmployee_Id(employeeId);
 
-       return  ResponseEntity.ok(d);
+
     }
 
 

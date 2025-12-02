@@ -1,21 +1,23 @@
-//package enat.bank.share;
-//
-//import enat.bank.Employee.Employee;
-//import jakarta.persistence.Entity;
-//import jakarta.persistence.OneToMany;
-//import jakarta.persistence.Table;
-//import lombok.AllArgsConstructor;
-//import lombok.Data;
-//import lombok.NoArgsConstructor;
-//
-//@Entity
-//@Table(name="share")
-//@Data
-//@AllArgsConstructor
-//@NoArgsConstructor
-//public class Share {
-//    private Long id;
-//    @OneToMany
-//    private Employee employee;
-//
-//}
+package enat.bank.share;
+import enat.bank.utils.Auditable;
+import jakarta.persistence.*;
+import lombok.AllArgsConstructor;
+import lombok.Data;
+import lombok.NoArgsConstructor;
+
+@Entity
+@Table(name="share")
+@Data
+@AllArgsConstructor
+@NoArgsConstructor
+public class Share extends Auditable {
+   @Id
+   @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    private Long id;
+    private Long   employeeId;
+    private String  membershipId;
+    private String fullName;
+    private double totalSaving;
+    private double noOfShare;
+
+}

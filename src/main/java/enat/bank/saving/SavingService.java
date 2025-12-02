@@ -4,6 +4,7 @@ import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
 import enat.bank.Employee.Employee;
 import enat.bank.Employee.EmployeeRepository;
+import enat.bank.Employee.Status;
 import enat.bank.exception.SavingAndLoanRepaymentSaveFileException;
 import enat.bank.utils.CommonService;
 import enat.bank.exception.SavingAndLoanRepaymentsNotFoundException;
@@ -69,7 +70,7 @@ public class SavingService extends CommonService<Saving,Long,String > {
                 System.out.println("employee id..."+employeeId+"...crsSaving"+fields[2] + "...crsLoan"+fields[3]);
 
 
-                Employee employee =this.employeeRepository.findById(Long.valueOf(employeeId)).orElseThrow(()-> new SavingAndLoanRepaymentsNotFoundException("No employee is registered by this ID:..."+employeeId));
+                Employee employee =this.employeeRepository.findByEmployeeIdAndStatus(Long.valueOf(employeeId), Status.ACTIVE).orElseThrow(()-> new SavingAndLoanRepaymentsNotFoundException("No employee is registered by this ID:..."+employeeId));
                 Saving entity = Saving.builder()
                         .employee(employee)
                         .fullName(fullName)

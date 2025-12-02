@@ -62,8 +62,8 @@ public class LoanRepaymentController implements Common<LoanRepayment, String, St
     }
 
     @DeleteMapping("delete-by-employee-id/{employeeId}")
-    public ResponseEntity<List<LoanRepayment>> deleteByEmployeeId(@PathVariable("employeeId") Long  employeeId) {
-        return loanRepaymentService.deleteByEmployeeId(employeeId);
+    public void deleteByEmployeeId(@PathVariable("employeeId") Long  employeeId) {
+        loanRepaymentService.deleteByEmployeeId(employeeId);
     }
 
 
