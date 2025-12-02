@@ -18,12 +18,12 @@ public class Roles {
     @GeneratedValue(strategy = GenerationType.SEQUENCE)
     @Column(nullable = false,unique = true)
     private Long id;
+
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_id",nullable = false)
+    @JoinColumn(name = "role_type_id", nullable = false)
     private RoleTypes roleTypes;
-    @ManyToOne
-    @JoinColumn(name="user_id" ,nullable = false)
+    @ManyToOne(fetch = FetchType.EAGER)
+    @JoinColumn(name="user_id", nullable = false)
     @JsonBackReference
-//    @ToString.Exclude
     private User user;
 }

@@ -63,7 +63,7 @@ public class AuthController {
             }
     )
     public Map<String, String> login(@RequestBody User user) {
-
+        System.out.println("users : ,,,,," +user);
         Authentication authentication=authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         user.getUserName(),
@@ -74,7 +74,6 @@ public class AuthController {
 
 
         User userDetails=userRepository.findByUserName(user.getUserName());
-
         String token = jwtService.generateToken(userDetails);
         return Map.of("token", token);
     }

@@ -11,10 +11,10 @@ import java.util.List;
 
 @Repository
 public interface SavingRepository extends CommonJpaRepo<Saving,Long> {
-    Page<Saving> findByEmployeeId(String employeeId , Pageable pageable);
-    List<Saving> deleteByEmployeeId(String employeeId);
-    @Query("SELECT SUM(s.craSaving) FROM Saving s WHERE s.employeeId = :employeeId")
-    Double findTotalSavingByEmployeeId(@Param("employeeId") String employeeId);
+    Page<Saving> findByEmployee_Id(Long  employeeId , Pageable pageable);
+    List<Saving> deleteByEmployee_Id(Long employeeId);
+    @Query("SELECT SUM(s.craSaving) FROM Saving s WHERE s.employee.id = :employeeId")
+    Double findTotalSavingByEmployeeId(@Param("employeeId") Long employeeId);
     @Query("SELECT SUM(s.craSaving) FROM Saving s")
     Double sumCraSaving();
 

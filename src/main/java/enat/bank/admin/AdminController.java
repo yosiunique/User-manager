@@ -71,6 +71,7 @@ public class AdminController implements Common<User, String, String, UserDto> {
         exist.setLastName(user.getLastName());
         exist.setEmail(user.getEmail());
         exist.setEnable(user.getEnable());
+        exist.setPhoneNumber(user.getPhoneNumber());
         exist.setAttribute(user.getAttribute());
         return adminService.update(exist, id);
     }

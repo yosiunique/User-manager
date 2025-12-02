@@ -4,11 +4,14 @@ import enat.bank.utils.Common;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
+import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -54,26 +57,26 @@ public class SavingController implements Common<Saving, String, String, Saving> 
 
 
     @GetMapping("search-by-employee-id/{employeeId}")
-    public Page<Saving>  findByEmployeeIds(@PathVariable("employeeId") String employeeId , Pageable pageable){
+    public Page<Saving>  findByEmployeeIds(@PathVariable("employeeId") Long  employeeId , Pageable pageable){
         return savingService.findByEmployeeIds(employeeId,pageable);
 
     }
 
     @DeleteMapping("delete-by-employee-id/{employeeId}")
-    public ResponseEntity<List<Saving>> deleteByEmployeeId(@PathVariable("employeeId") String employeeId) {
+    public ResponseEntity<List<Saving>> deleteByEmployeeId(@PathVariable("employeeId") Long  employeeId) {
         return savingService.deleteByEmployeeId(employeeId);
     }
 
 
     @PostMapping("import-csv")
     @Operation(summary = "Import repayment data from CSV", description = "Uploads and imports repayment records from a CSV file.")
-    public ResponseEntity<List<Saving>> importCsvFile(@RequestParam("file") MultipartFile file) {
-        return savingService.importCsv(file);
+    public ResponseEntity<List<Saving>> importCsvFile(@RequestParam("file") MultipartFile file , @RequestParam("forMonth")LocalDate forMonth) {
+        return savingService.importCsv(file, forMonth);
     }
 
 
     @GetMapping("total-cra-saving/{employeeId}")
-    public Double findTotalCraSaving(@PathVariable("employeeId") String employeeId){
+    public Double findTotalCraSaving(@PathVariable("employeeId") Long  employeeId){
 
         return savingService.findTotalCraSaving(employeeId);
     }

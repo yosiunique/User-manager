@@ -1,6 +1,6 @@
 package enat.bank.utils;
 
-
+import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
@@ -12,7 +12,7 @@ public abstract class CommonService<E, ID, D> {
 
     protected  CommonJpaRepo<E, ID> repository;
 
-    protected CommonService(CommonJpaRepo<E,ID> repository) {
+    protected CommonService(CommonJpaRepo<E ,ID> repository) {
         this.repository = repository;
     }
 
@@ -30,6 +30,7 @@ public abstract class CommonService<E, ID, D> {
                 .body(saved);
     }
 
+    @Transactional
     public ResponseEntity<E> update(E entity, ID id) {
         if (!repository.existsById(id)) {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(entity);
