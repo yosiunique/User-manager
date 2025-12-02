@@ -66,7 +66,7 @@ pipeline {
             }
             steps {
                 sshagent(['enat-remedy-production']) {
-                    sh 'ssh -o StrictHostKeyChecking=no -l  ${PRODUCTION_SERVER_USERNAME} ${PRODUCTION_SERVER_ADDRESS} "docker stop loan-repayment | true;     docker rm loan-repayment | true;     docker run -p 8060:8080 -v /mnt/loan:/var/storage -e "SPRING_PROFILES_ACTIVE=live" -d --name loan-repayment ${DOCKER_PRIVATE_REGISTRY}/loan-repayment:${TAG}"'
+                    sh 'ssh -o StrictHostKeyChecking=no -l  ${PRODUCTION_SERVER_USERNAME} ${PRODUCTION_SERVER_ADDRESS} "docker stop loan-repayment | true;     docker rm loan-repayment | true;     docker run -p 8061:8080 -v /mnt/loan:/var/storage -e "SPRING_PROFILES_ACTIVE=live" -d --name loan-repayment ${DOCKER_PRIVATE_REGISTRY}/loan-repayment:${TAG}"'
                 }
             }
         }
