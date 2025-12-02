@@ -1,8 +1,11 @@
 package enat.bank.saving;
 
+import enat.bank.Employee.Employee;
 import enat.bank.utils.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
+
+import java.time.LocalDate;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -15,9 +18,13 @@ public class Saving extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    private String employeeId;
+    @ManyToOne
+    @JoinColumn(name = "employee_id")
+    private Employee employee;
     private String fullName;
     private double   craSaving;
+    private Boolean status;
+    private LocalDate forMonth;
 
 
 

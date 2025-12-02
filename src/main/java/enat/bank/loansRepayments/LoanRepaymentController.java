@@ -10,6 +10,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Optional;
 
@@ -55,28 +56,33 @@ public class LoanRepaymentController implements Common<LoanRepayment, String, St
 
 
     @GetMapping("search-by-employee-id/{employeeId}")
-    public Page<LoanRepayment>  findByEmployeeIds(@PathVariable("employeeId") String employeeId , Pageable pageable){
+    public Page<LoanRepayment>  findByEmployeeIds(@PathVariable("employeeId") Long  employeeId , Pageable pageable){
         return loanRepaymentService.findByEmployeeIds(employeeId,pageable);
 
     }
 
     @DeleteMapping("delete-by-employee-id/{employeeId}")
-    public ResponseEntity<List<LoanRepayment>> deleteByEmployeeId(@PathVariable("employeeId") String employeeId) {
-        return loanRepaymentService.deleteByEmployeeId(employeeId);
+    public void deleteByEmployeeId(@PathVariable("employeeId") Long  employeeId) {
+        loanRepaymentService.deleteByEmployeeId(employeeId);
     }
 
 
     @PostMapping("import-csv")
     @Operation(summary = "Import repayment data from CSV", description = "Uploads and imports repayment records from a CSV file.")
-    public ResponseEntity<List<LoanRepayment>> importCsvFile(@RequestParam("file") MultipartFile file) {
-        return loanRepaymentService.importCsv(file);
+    public ResponseEntity<List<LoanRepayment>> importCsvFile(@RequestParam("file") MultipartFile file, @RequestParam("forMonth")LocalDate forMonth) {
+        return loanRepaymentService.importCsv(file,forMonth);
     }
 
 
     @GetMapping("total-cra-loan-repayments/{employeeId}")
 
-    public Double findTotalCraLoanRepayemenst(@PathVariable("employeeId") String employeeId){
+    public Double findTotalCraLoanRepayemenst(@PathVariable("employeeId") Long  employeeId){
         return loanRepaymentService.findTotalCraLoanRepaymenets(employeeId);
+    }
+
+    @GetMapping("count")
+    public Double countAllLoanRepayments(){
+        return loanRepaymentService.sumAllLoanRepayments();
     }
 
 

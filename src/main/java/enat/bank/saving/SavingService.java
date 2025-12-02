@@ -2,6 +2,9 @@ package enat.bank.saving;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
+import enat.bank.Employee.Employee;
+import enat.bank.Employee.EmployeeRepository;
+import enat.bank.Employee.Status;
 import enat.bank.exception.SavingAndLoanRepaymentSaveFileException;
 import enat.bank.utils.CommonService;
 import enat.bank.exception.SavingAndLoanRepaymentsNotFoundException;
@@ -14,25 +17,31 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
 
 @Service
-public class SavingService extends CommonService<Saving,Long,String> {
+public class SavingService extends CommonService<Saving,Long,String > {
+    private final String[] header={"employeeId","fullName","craSaving" };
     private final SavingRepository savingRepository;
     private  final SavingDetailsRepository savingDetailsRepository;
+    private final EmployeeRepository employeeRepository;
     protected SavingService(SavingRepository savingRepository
-    , SavingDetailsRepository savingDetailsRepository
+    , SavingDetailsRepository savingDetailsRepository ,
+                            EmployeeRepository employeeRepository
                                             ) {
         super(savingRepository);
+        this.employeeRepository=employeeRepository;
         this.savingRepository = savingRepository;
         this.savingDetailsRepository =savingDetailsRepository;
 
     }
-    public ResponseEntity<List<Saving>> importCsv(MultipartFile file) {
-        List<Saving> dataList = new ArrayList<>();
 
+    @Transactional
+    public ResponseEntity<List<Saving>> importCsv(MultipartFile file, LocalDate forMonth) {
+        List<Saving> dataList = new ArrayList<>();
         try (CSVReader  reader = new CSVReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
             int lineNumber=0;
             boolean isFirst=true;
@@ -45,6 +54,11 @@ public class SavingService extends CommonService<Saving,Long,String> {
                     continue;
                 }
                 if(isFirst){
+
+                    if(!fields[0].trim().equals(header[0]) &&!fields[1].trim().equals(header[1]) &&!fields[2].trim().equals(header[0]) &&!fields[2].trim().equals(header[2])  ){
+                        throw new SavingAndLoanRepaymentSaveFileException("invalid header pls Enter valid heeaders Name !");
+                    }
+
                     System.err.println("headers"+fields);
                     isFirst=false;
                     continue;
@@ -53,26 +67,24 @@ public class SavingService extends CommonService<Saving,Long,String> {
                 String employeeId = fields[0].trim();
                 String fullName = fields[1].trim();
                 Double craSaving = parseDoubleSafe(fields[2]);
-                Double crassLoanRepayment = parseDoubleSafe(fields[3]);
-                System.out.println("employee id..."+employeeId+"...crsSaving"+fields[2] + "...crsssloan"+fields[3]);
+                System.out.println("employee id..."+employeeId+"...crsSaving"+fields[2] + "...crsLoan"+fields[3]);
+
+
+                Employee employee =this.employeeRepository.findByEmployeeIdAndStatus(Long.valueOf(employeeId), Status.ACTIVE).orElseThrow(()-> new SavingAndLoanRepaymentsNotFoundException("No employee is registered by this ID:..."+employeeId));
                 Saving entity = Saving.builder()
-                        .employeeId(employeeId)
+                        .employee(employee)
                         .fullName(fullName)
                         .craSaving(craSaving)
                         .build();
 
                 dataList.add(entity);
             }
-
             repository.saveAll(dataList);
-            System.out.println("Imported records: " + dataList.size());
-
         } catch (IOException | CsvValidationException e) {
             SavingDetails saveDetails =SavingDetails.builder()
                     .fileName(file.getOriginalFilename())
-                    .fileSize(file.getSize())
-                    .filePath(file.getResource().toString())
-                    .remarks("failds du to ..." +e.getMessage())
+                    .status("failds du to ..." +e.getMessage())
+                    .forMonth(forMonth)
                     .build();
             savingDetailsRepository.save(saveDetails);
             throw new SavingAndLoanRepaymentSaveFileException("Failed to read CSV file: " + e.getMessage());
@@ -81,17 +93,12 @@ public class SavingService extends CommonService<Saving,Long,String> {
 
         SavingDetails saveDetails =SavingDetails.builder()
                 .fileName(file.getOriginalFilename())
-                .fileSize(file.getSize())
-                .tableName(dataList.get(0).getCreatedAt().toString())
-                .filePath(file.getResource().toString())
-                .remarks("compleleted ...")
+                .status("completed")
+                .dataSize(dataList.size())
+                .forMonth(forMonth)
                 .build();
+        savingDetailsRepository.save(saveDetails);
                savingDetailsRepository.save(saveDetails);
-
-
-
-
-
         return ResponseEntity.ok(dataList);
     }
 
@@ -113,24 +120,29 @@ public class SavingService extends CommonService<Saving,Long,String> {
 
     }
 
-    public Page<Saving> findByEmployeeIds(String employeeId, Pageable pageable){
+    public Page<Saving> findByEmployeeIds(Long  employeeId, Pageable pageable){
 
-        return  savingRepository.findByEmployeeId(employeeId ,pageable);
+        return  savingRepository.findByEmployee_Id(employeeId ,pageable);
 
     }
 
     @Transactional
-    public ResponseEntity<List<Saving>> deleteByEmployeeId(String employeeId) {
-       List<Saving> d= savingRepository.deleteByEmployeeId(employeeId);
+    public ResponseEntity<List<Saving>> deleteByEmployeeId(Long  employeeId) {
+       List<Saving> d= savingRepository.deleteByEmployee_Id(employeeId);
 
        return  ResponseEntity.ok(d);
     }
 
-    public Double findTotalCraSaving(String employeeId)
+    public Double findTotalCraSaving(Long  employeeId)
     {
 
         return savingRepository.findTotalSavingByEmployeeId(employeeId);
 
+    }
+
+
+    public Double  sumAllSaving(){
+        return savingRepository.sumCraSaving();
     }
 
 
