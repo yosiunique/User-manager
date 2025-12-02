@@ -20,7 +20,7 @@ public class Roles {
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
-    @JoinColumn(name = "role_type_id", nullable = false)
+    @JoinColumn(name = "role_id", nullable = false)
     private RoleTypes roleTypes;
     @ManyToOne(fetch = FetchType.EAGER)
     @JoinColumn(name="user_id", nullable = false)
