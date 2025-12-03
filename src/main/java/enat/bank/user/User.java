@@ -17,7 +17,7 @@ import java.util.List;
 @NoArgsConstructor
 public class User extends Auditable {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private  Long id;
     private String  firstName;
     private  String lastName;

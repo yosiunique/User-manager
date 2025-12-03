@@ -15,7 +15,7 @@ import lombok.ToString;
 @AllArgsConstructor
 public class Roles {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(nullable = false,unique = true)
     private Long id;
 
