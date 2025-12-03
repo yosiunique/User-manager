@@ -15,7 +15,7 @@ import java.time.LocalDateTime;
 @Builder
 public class SavingDetails extends Auditable{
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String fileName;
     private String status;

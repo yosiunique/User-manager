@@ -18,7 +18,7 @@ import java.time.LocalDateTime;
 @Builder
 public class LoanRepaymentDetails extends Auditable{
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String fileName;
     private String status;

@@ -15,7 +15,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class Employee extends Auditable {
     @Id
-   @GeneratedValue(strategy = GenerationType.SEQUENCE)
+   @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable=false)
     private Long employeeId;
