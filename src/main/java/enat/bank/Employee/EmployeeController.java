@@ -71,7 +71,7 @@ public class EmployeeController implements Common<Employee ,String,String,Employ
 
     @PostMapping("import-csv")
 
-    public  List<Employee> importCsv(@RequestParam("file") MultipartFile file, @RequestParam("forMonth") LocalDate forMonth){
+    public  List<Employee> importCsv(@RequestParam("file") MultipartFile file){
 
     return employeeService.importCsv(file) ;
     }
