@@ -69,7 +69,7 @@ public class EmployeeController implements Common<Employee ,String,String,Employ
         return employeeService.findByEmployeeId(employeeId);
     }
 
-    @PostMapping("import-csv")
+    @PostMapping("/import-csv",consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 
     public  List<Employee> importCsv(@RequestParam("file") MultipartFile file){
         System.out.println("called !.....");
