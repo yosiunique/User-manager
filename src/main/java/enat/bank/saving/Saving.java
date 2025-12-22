@@ -21,7 +21,6 @@ public class Saving extends Auditable {
     @ManyToOne
     @JoinColumn(name = "employee_id")
     private Employee employee;
-    private String fullName;
     private double   craSaving;
     private Boolean status;
     private LocalDate forMonth;

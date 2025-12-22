@@ -80,7 +80,7 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
                 Double crassLoanRepayment = parseDoubleSafe(fields[2]);
                 Employee employee=employeeRepository.findByEmployeeIdAndStatus(Long.valueOf(employeeId), Status.ACTIVE)
                         .orElseThrow(()-> new LoanRepaymentsException("Employee Not Found with in this ID...."+employeeId));
-                 double rate = applicationProps.getAnnualInterset() / applicationProps.getAnnualPeriod();
+                 double rate = employee.getAnnualInterest() / employee.getPeriod();
                  double emi=0;
                  double interset=0;
                  double principal=0;
@@ -90,8 +90,8 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
                  }
                if(employee.getEmi()==0) {
 
-                     emi = (employee.getOutStanding() * rate * (Math.pow(1 + rate, applicationProps.getPeriod()))) /
-                            ((Math.pow(1 + rate, applicationProps.getPeriod())) - 1);
+                     emi = (employee.getOutStanding() * rate * (Math.pow(1 + rate, employee.getPeriod()))) /
+                            ((Math.pow(1 + rate, employee.getPeriod())) - 1);
                      interset = employee.getOutStanding() * rate;
                      principal = emi - interset;
                      remainningBalance = employee.getOutStanding() - principal;
@@ -118,7 +118,6 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
                 }
                 LoanRepayment entity = LoanRepayment.builder()
                         .employee(employee)
-                        .fullName(fullName)
                         .principal(principal)
                         .interset(interset)
                         .forMonth(LocalDate.now())
@@ -169,7 +168,6 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
         LoanRepayment loanRepayment = loanRepaymentRepository.findById(id).orElseThrow(()->
                 new SavingAndLoanRepaymentsNotFoundException("SavingAndLoanRepayments record not found with this Id:.."+id));
         loanRepayment.setCrassLoanRepayment(update.getCrassLoanRepayment());
-        loanRepayment.setFullName(update.getFullName());
         return loanRepayment;
 
     }
@@ -198,5 +196,71 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
 
         return loanRepaymentRepository.sumCrassLoanRepayment();
   }
+
+
+
+  public LoanRepayment singleLoanRepaymnt(LoanRepayment loanRepayment){
+
+      Employee employee=employeeRepository.findByEmployeeIdAndStatus(loanRepayment.getEmployee().getEmployeeId() , Status.ACTIVE)
+              .orElseThrow(()-> new LoanRepaymentsException("Employee Not Found with in this ID...."+loanRepayment.getEmployee().getEmployeeId()));
+      double rate = employee.getAnnualInterest() / employee.getPeriod();
+      double emi=0;
+      double interset=0;
+      double principal=0;
+      double remainningBalance=0;
+      if (employee.getOutStanding()<=0){
+          throw new LoanRepaymentsException("This Loan Repayments Completed  !");
+      }
+      if(employee.getEmi()==0) {
+
+          emi = (employee.getOutStanding() * rate * (Math.pow(1 + rate, employee.getPeriod()))) /
+                  ((Math.pow(1 + rate, employee.getPeriod())) - 1);
+          interset = employee.getOutStanding() * rate;
+          principal = emi - interset;
+          remainningBalance = employee.getOutStanding() - principal;
+          System.out.println("outStand:..." + employee.getOutStanding());
+          System.out.println("rate:..." + rate);
+          System.out.println("Monthly:..." + emi);
+          System.out.println("interset:.." + interset);
+          System.out.println("princpal:.." + principal);
+          System.out.println("remaining Balance:....." + remainningBalance);
+          employee.setOutStanding(remainningBalance);
+          employee.setEmi(emi);
+      } else{
+          System.out.println("outStand:..." + employee.getOutStanding());
+          System.out.println("rate:..." + rate);
+          System.out.println("Monthly:..." + employee.getEmi());
+          System.out.println("interset:.." + employee.getOutStanding()*rate);
+          System.out.println("princpal:.." + (employee.getEmi()-(employee.getOutStanding()*rate)));
+          System.out.println("remaining Balance:....." + (employee.getOutStanding()-(employee.getEmi()-(employee.getOutStanding()*rate))));
+          employee.setOutStanding((employee.getOutStanding()-(employee.getEmi()-(employee.getOutStanding()*rate))));
+          emi = employee.getEmi();
+          interset = employee.getOutStanding() * rate;
+          principal = emi - interset;
+
+      }
+      LoanRepayment entity = LoanRepayment.builder()
+              .employee(employee)
+              .principal(principal)
+              .interset(interset)
+              .forMonth(loanRepayment.getForMonth())
+              .crassLoanRepayment(loanRepayment.getCrassLoanRepayment())
+              .build();
+
+    employeeRepository.save(employee);
+
+
+
+      return  entity ;
+  }
+
+
+
+
+
+
+
+
+
 
 }

@@ -25,7 +25,9 @@ public class LoanRepaymentController implements Common<LoanRepayment, String, St
     @Override
     @Operation(summary = "Create repayment record", description = "Creates a new saving or loan repayment record.")
     public ResponseEntity<LoanRepayment> create(@RequestBody LoanRepayment loanRepayment) {
-        return loanRepaymentService.create(loanRepayment);
+
+
+        return loanRepaymentService.create(loanRepaymentService.singleLoanRepaymnt(loanRepayment));
     }
 
     @Override

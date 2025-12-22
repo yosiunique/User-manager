@@ -5,11 +5,11 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.security.PublicKey;
+import java.time.LocalDate;
 import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
@@ -67,6 +67,13 @@ public class EmployeeController implements Common<Employee ,String,String,Employ
     public List<Employee> getByEmployeeId(@PathVariable("employeeId")Long employeeId){
 
         return employeeService.findByEmployeeId(employeeId);
+    }
+
+    @PostMapping("import-csv")
+
+    public  List<Employee> importCsv(@RequestParam("file") MultipartFile file, @RequestParam("forMonth") LocalDate forMonth){
+
+    return employeeService.importCsv(file) ;
     }
 
 

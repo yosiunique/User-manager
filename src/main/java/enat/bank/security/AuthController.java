@@ -63,7 +63,7 @@ public class AuthController {
             }
     )
     public Map<String, String> login(@RequestBody User user) {
-        System.out.println("users : ,,,,," +user);
+
         Authentication authentication=authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         user.getUserName(),

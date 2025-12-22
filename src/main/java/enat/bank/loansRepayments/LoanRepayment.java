@@ -25,17 +25,11 @@ public class LoanRepayment extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @ManyToOne
     @JoinColumn(name="employee_id")
     private Employee employee;
-
-    private String fullName;
-
     private double principal;
     private double interset;
-
     private LocalDate forMonth;
-
     private double crassLoanRepayment;
 }

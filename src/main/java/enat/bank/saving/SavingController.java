@@ -1,5 +1,8 @@
 package enat.bank.saving;
 
+import enat.bank.Employee.Employee;
+import enat.bank.Employee.EmployeeRepository;
+import enat.bank.Employee.Status;
 import enat.bank.utils.Common;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -22,10 +25,13 @@ import java.util.Optional;
 public class SavingController implements Common<Saving, String, String, Saving> {
 
     private final SavingService savingService;
+    private final EmployeeRepository  employeeRepository ;
 
     @Override
     @Operation(summary = "Create repayment record", description = "Creates a new saving or loan repayment record.")
     public ResponseEntity<Saving> create(@RequestBody Saving saving) {
+        Employee employee=employeeRepository .findByEmployeeIdAndStatus(saving.getEmployee().getEmployeeId() , Status.ACTIVE).get();
+        saving.setEmployee(employee);
         return savingService.create(saving);
     }
 

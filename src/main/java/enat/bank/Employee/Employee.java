@@ -3,11 +3,13 @@ package enat.bank.Employee;
 import enat.bank.utils.Auditable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
 import java.time.LocalDate;
 
+@Builder
 @Entity
 @Table(name="employee")
 @Data
@@ -20,6 +22,8 @@ public class Employee extends Auditable {
     @Column(nullable=false)
     private Long employeeId;
     @Column(nullable = false)
+    private String membershipId;
+    @Column(nullable = false)
     private String employeeFullName;
     @Column(nullable = false)
     private LocalDate effectiveDate;
@@ -30,7 +34,7 @@ public class Employee extends Auditable {
     @Column(nullable = false)
     private Double emi;
     @Column(nullable = false)
-    private Long loanId;
+    private String loanId;
     @Column(nullable = false)
     private  double annualInterest;
     @Column(nullable = false)

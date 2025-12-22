@@ -17,7 +17,8 @@ public class Share extends Auditable {
     private Long   employeeId;
     private String  membershipId;
     private String fullName;
-    private double totalSaving;
-    private double noOfShare;
+    private Double  totalSaving;
+    private Double  share;
+    private Double  noOfShare;
 
 }

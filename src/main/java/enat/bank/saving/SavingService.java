@@ -73,7 +73,6 @@ public class SavingService extends CommonService<Saving,Long,String > {
                 Employee employee =this.employeeRepository.findByEmployeeIdAndStatus(Long.valueOf(employeeId), Status.ACTIVE).orElseThrow(()-> new SavingAndLoanRepaymentsNotFoundException("No employee is registered by this ID:..."+employeeId));
                 Saving entity = Saving.builder()
                         .employee(employee)
-                        .fullName(fullName)
                         .craSaving(craSaving)
                         .build();
 
@@ -115,7 +114,6 @@ public class SavingService extends CommonService<Saving,Long,String > {
         Saving saving = savingRepository.findById(id).orElseThrow(()->
                 new SavingAndLoanRepaymentsNotFoundException("SavingAndLoanRepayments record not found with this Id:.."+id));
         saving.setCraSaving(update.getCraSaving());
-        saving.setFullName(update.getFullName());
         return saving;
 
     }
