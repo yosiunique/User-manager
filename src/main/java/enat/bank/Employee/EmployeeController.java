@@ -7,7 +7,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-
+import org.springframework.http.MediaType;
 
 import java.security.PublicKey;
 import java.time.LocalDate;
@@ -70,7 +70,8 @@ public class EmployeeController implements Common<Employee ,String,String,Employ
         return employeeService.findByEmployeeId(employeeId);
     }
 
-    @PostMapping("import-csv")
+    @PostMapping(value = "/import-csv",
+            consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 
     public  List<Employee> importCsv(@RequestParam("file") MultipartFile file){
         System.out.println("called !.....");
