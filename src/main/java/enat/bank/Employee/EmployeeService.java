@@ -6,6 +6,7 @@ import enat.bank.exception.LoanRepaymentsException;
 import enat.bank.exception.SavingAndLoanRepaymentSaveFileException;
 import enat.bank.loansRepayments.LoanRepayment;
 import enat.bank.loansRepayments.LoanRepaymentDetails;
+import enat.bank.utils.ApplicationProps;
 import enat.bank.utils.CommonService;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
@@ -23,9 +24,11 @@ import java.util.Optional;
 @Service
 public class EmployeeService extends CommonService<Employee ,Long, Employee> {
     private final  EmployeeRepository employeeRepository ;
-    public EmployeeService(EmployeeRepository employeeRepository){
+    private  final ApplicationProps applicationProps ;
+    public EmployeeService(EmployeeRepository employeeRepository ,ApplicationProps applicationProps){
         super(employeeRepository);
         this.employeeRepository = employeeRepository;
+        this.applicationProps=applicationProps;
     }
 
     protected Employee updateEmployee(Long id ,Employee employee)
@@ -84,8 +87,8 @@ public class EmployeeService extends CommonService<Employee ,Long, Employee> {
                        .outStanding((parseDoubleSafe(fields[5])))
                        .firstOutStanding(parseDoubleSafe(fields[5]))
                        .emi(0.0)
-                       .annualInterest(0.07)
-                       .period(60)
+                       .annualInterest(applicationProps.getAnnualInterset())
+                       .period(applicationProps.getPeriod())
                        .status(Status.ACTIVE)
                        .build();
 
