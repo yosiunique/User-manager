@@ -24,7 +24,4 @@ public class Saving extends Auditable {
     private double   craSaving;
     private Boolean status;
     private LocalDate forMonth;
-
-
-
 }
