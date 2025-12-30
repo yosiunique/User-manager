@@ -26,7 +26,6 @@ public class LoanRepaymentController implements Common<LoanRepayment, String, St
     @Operation(summary = "Create repayment record", description = "Creates a new saving or loan repayment record.")
     public ResponseEntity<LoanRepayment> create(@RequestBody LoanRepayment loanRepayment) {
 
-
         return loanRepaymentService.create(loanRepaymentService.singleLoanRepaymnt(loanRepayment));
     }
 
@@ -58,14 +57,14 @@ public class LoanRepaymentController implements Common<LoanRepayment, String, St
 
 
     @GetMapping("search-by-employee-id/{employeeId}")
-    public Page<LoanRepayment>  findByEmployeeIds(@PathVariable("employeeId") Long  employeeId , Pageable pageable){
-        return loanRepaymentService.findByEmployeeIds(employeeId,pageable);
+    public Page<LoanRepayment>  findByEmployeeIds(@PathVariable("employeeId") Long   loanId , Pageable pageable){
+        return loanRepaymentService.findByLoanIds(loanId,pageable);
 
     }
 
     @DeleteMapping("delete-by-employee-id/{employeeId}")
-    public void deleteByEmployeeId(@PathVariable("employeeId") Long  employeeId) {
-        loanRepaymentService.deleteByEmployeeId(employeeId);
+    public void deleteByEmployeeId(@PathVariable("employeeId") String  loanId) {
+        loanRepaymentService.deleteByLoanId(loanId);
     }
 
 

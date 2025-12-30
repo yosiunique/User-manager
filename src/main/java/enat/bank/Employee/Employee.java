@@ -25,22 +25,5 @@ public class Employee extends Auditable {
     private String membershipId;
     @Column(nullable = false)
     private String employeeFullName;
-    @Column(nullable = false)
-    private LocalDate effectiveDate;
-    @Column(nullable = false)
-    private  Double outStanding;
-    @Convert(converter = StatusConverter.class)
-    private  Status status;
-    @Column(nullable = false)
-    private Double emi;
-    @Column(nullable = false)
-    private String loanId;
-    @Column(nullable = false)
-    private  double annualInterest;
-    @Column(nullable = false)
-    private double  period;
-    @Column(nullable = false)
-    private double firstOutStanding;
-
 
 }

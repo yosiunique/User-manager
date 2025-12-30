@@ -30,7 +30,7 @@ public class SavingController implements Common<Saving, String, String, Saving> 
     @Override
     @Operation(summary = "Create repayment record", description = "Creates a new saving or loan repayment record.")
     public ResponseEntity<Saving> create(@RequestBody Saving saving) {
-        Employee employee=employeeRepository .findByEmployeeIdAndStatus(saving.getEmployee().getEmployeeId() , Status.ACTIVE).get();
+        Employee employee=employeeRepository .findByEmployeeId(saving.getEmployee().getEmployeeId()).get();
         saving.setEmployee(employee);
         return savingService.create(saving);
     }

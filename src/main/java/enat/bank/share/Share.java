@@ -1,4 +1,5 @@
 package enat.bank.share;
+import enat.bank.Employee.Employee;
 import enat.bank.utils.Auditable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -16,9 +17,9 @@ public class Share extends Auditable {
    @Id
    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    private Long   employeeId;
-    private String  membershipId;
-    private String fullName;
+    @OneToOne
+    @JoinColumn(name="employee_id")
+    private Employee employee;
     private Double  totalSaving;
     private Double  share;
     private Double  noOfShare;

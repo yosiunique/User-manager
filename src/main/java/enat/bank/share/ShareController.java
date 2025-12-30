@@ -1,5 +1,7 @@
 package enat.bank.share;
 
+import enat.bank.Employee.Employee;
+import enat.bank.Employee.EmployeeRepository;
 import enat.bank.exception.ShareException;
 import enat.bank.utils.Common;
 import lombok.RequiredArgsConstructor;
@@ -19,21 +21,25 @@ import java.util.Optional;
 @RequiredArgsConstructor
 public class ShareController implements Common<Share, String, String, Share> {
     private  final ShareService shareService;
-
+   private final EmployeeRepository employeeRepository ;
     @Override
     public ResponseEntity<Share> create(Share share)  {
 
-    if (shareService.getByEmployeeId(share.getEmployeeId()).isPresent()){
+    if (shareService.getByEmployeeId(share.getEmployee().getEmployeeId()).isPresent()){
 
         throw  new ShareException("this share already Registered !");
 
     }
-
+    Employee employee=employeeRepository.findByEmployeeId(share.getEmployee().getEmployeeId()).get();
+    share.setEmployee(employee);
     return  shareService.create(share);
     }
 
     @Override
     public ResponseEntity<Share> update(Long id, Share share) {
+
+        Employee employee =employeeRepository.findByEmployeeId(share.getEmployee().getEmployeeId()).get();
+        share.setEmployee(employee);
         return shareService.update(shareService.updateShare(id,share),id);
     }
 

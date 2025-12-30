@@ -70,7 +70,7 @@ public class SavingService extends CommonService<Saving,Long,String > {
                 System.out.println("employee id..."+employeeId+"...crsSaving"+fields[2] + "...crsLoan"+fields[3]);
 
 
-                Employee employee =this.employeeRepository.findByEmployeeIdAndStatus(Long.valueOf(employeeId), Status.ACTIVE).orElseThrow(()-> new SavingAndLoanRepaymentsNotFoundException("No employee is registered by this ID:..."+employeeId));
+                Employee employee =this.employeeRepository.findByEmployeeId(Long.valueOf(employeeId)).orElseThrow(()-> new SavingAndLoanRepaymentsNotFoundException("No employee is registered by this ID:..."+employeeId));
                 Saving entity = Saving.builder()
                         .employee(employee)
                         .craSaving(craSaving)

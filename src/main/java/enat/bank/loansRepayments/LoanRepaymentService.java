@@ -2,12 +2,12 @@ package enat.bank.loansRepayments;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
-import enat.bank.Employee.Employee;
-import enat.bank.Employee.EmployeeRepository;
 import enat.bank.Employee.Status;
 import enat.bank.exception.LoanRepaymentsException;
 import enat.bank.exception.SavingAndLoanRepaymentSaveFileException;
 import enat.bank.exception.SavingAndLoanRepaymentsNotFoundException;
+import enat.bank.loan.Loan;
+import enat.bank.loan.LoanRepository;
 import enat.bank.utils.ApplicationProps;
 import enat.bank.utils.CommonService;
 import jakarta.transaction.Transactional;
@@ -16,7 +16,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
-
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
@@ -31,23 +30,23 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
     private final String[] header={"employeeId","fullName","craSaving" };
     private final LoanRepaymentRepository loanRepaymentRepository;
     private  final LoanRepaymentDetailsRepository loanRepaymentDetailsRepository;
-    private final EmployeeRepository employeeRepository;
+    private final LoanRepository loanRepository;
     protected LoanRepaymentService(LoanRepaymentRepository loanRepaymentRepository
     , LoanRepaymentDetailsRepository loanRepaymentDetailsRepository,
-                                   EmployeeRepository employeeRepository,
+                                   LoanRepository loanRepository,
                                    ApplicationProps applicationProps
                                             ) {
         super(loanRepaymentRepository);
         this.loanRepaymentRepository = loanRepaymentRepository;
         this.loanRepaymentDetailsRepository = loanRepaymentDetailsRepository;
-        this.employeeRepository=employeeRepository;
+         this.loanRepository =  loanRepository;
         this.applicationProps=applicationProps;
 
     }
     @Transactional
     public ResponseEntity<List<LoanRepayment>> importCsv(MultipartFile file ,LocalDate forMonth) {
         List<LoanRepayment> dataList = new ArrayList<>();
-        List<Employee> lsEmployee=new ArrayList<>();
+        List<Loan> lsLoan=new ArrayList<>();
         try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
             String[] fields;
             boolean isFirst = true;
@@ -77,62 +76,65 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
                  * ****/
                 String employeeId = fields[0].trim();
                 String fullName = fields[1].trim();
+
+                String loanId=fields[3].trim();
                 Double crassLoanRepayment = parseDoubleSafe(fields[2]);
-                Employee employee=employeeRepository.findByEmployeeIdAndStatus(Long.valueOf(employeeId), Status.ACTIVE)
+                Loan loan=loanRepository.findByEmployee_IdAndLoanIdAndStatus(Long.valueOf(employeeId),loanId,Status.ACTIVE)
                         .orElseThrow(()-> new LoanRepaymentsException("Employee Not Found with in this ID...."+employeeId));
-                 double rate = employee.getAnnualInterest() / employee.getPeriod();
+                 double rate = applicationProps.getAnnualInterset() / applicationProps.getAnnualPeriod();
                  double emi=0;
                  double interset=0;
                  double principal=0;
                  double remainningBalance=0;
-                 if (employee.getOutStanding()<=0){
+                 if (loan.getOutStanding()<=0){
                      throw new LoanRepaymentsException("This Loan Repayments Completed  !");
                  }
-               if(employee.getEmi()==0) {
+               if(loan.getEmi()==0) {
 
-                     emi = (employee.getOutStanding() * rate * (Math.pow(1 + rate, employee.getPeriod()))) /
-                            ((Math.pow(1 + rate, employee.getPeriod())) - 1);
-                     interset = employee.getOutStanding() * rate;
+                     emi = (loan.getOutStanding() * rate * (Math.pow(1 + rate, loan.getPeriod()))) /
+                            ((Math.pow(1 + rate, loan.getPeriod())) - 1);
+                     interset = loan.getOutStanding() * rate;
                      principal = emi - interset;
-                     remainningBalance = employee.getOutStanding() - principal;
-                    System.out.println("outStand:..." + employee.getOutStanding());
+                     remainningBalance = loan.getOutStanding() - principal;
+                    System.out.println("outStand:..." + loan.getOutStanding());
                     System.out.println("rate:..." + rate);
                     System.out.println("Monthly:..." + emi);
                     System.out.println("interset:.." + interset);
                     System.out.println("princpal:.." + principal);
                     System.out.println("remaining Balance:....." + remainningBalance);
-                    employee.setOutStanding(remainningBalance);
-                    employee.setEmi(emi);
+                    loan.setOutStanding(remainningBalance);
+                    loan.setEmi(emi);
                 } else{
-                    System.out.println("outStand:..." + employee.getOutStanding());
+                    System.out.println("outStand:..." + loan.getOutStanding());
                     System.out.println("rate:..." + rate);
-                    System.out.println("Monthly:..." + employee.getEmi());
-                    System.out.println("interset:.." + employee.getOutStanding()*rate);
-                    System.out.println("princpal:.." + (employee.getEmi()-(employee.getOutStanding()*rate)));
-                    System.out.println("remaining Balance:....." + (employee.getOutStanding()-(employee.getEmi()-(employee.getOutStanding()*rate))));
-                    employee.setOutStanding((employee.getOutStanding()-(employee.getEmi()-(employee.getOutStanding()*rate))));
-                   emi = employee.getEmi();
-                   interset = employee.getOutStanding() * rate;
+                    System.out.println("Monthly:..." + loan.getEmi());
+                    System.out.println("interset:.." + loan.getOutStanding()*rate);
+                    System.out.println("princpal:.." + (loan.getEmi()-(loan.getOutStanding()*rate)));
+                    System.out.println("remaining Balance:....." + (loan.getOutStanding()-(loan.getEmi()-(loan.getOutStanding()*rate))));
+                    loan.setOutStanding((loan.getOutStanding()-(loan.getEmi()-(loan.getOutStanding()*rate))));
+                   emi = loan.getEmi();
+                   interset = loan.getOutStanding() * rate;
                    principal = emi - interset;
 
                 }
                 LoanRepayment entity = LoanRepayment.builder()
-                        .employee(employee)
+                        .loan(loan)
                         .principal(principal)
                         .interset(interset)
+                        .crassLoanRepayment(principal+interset)
                         .forMonth(LocalDate.now())
                         .crassLoanRepayment(crassLoanRepayment)
                         .build();
 
                 dataList.add(entity);
-                lsEmployee.add(employee);
+                lsLoan.add(loan);
             }
 
             if (dataList.isEmpty()) {
                 throw new SavingAndLoanRepaymentSaveFileException("No valid records found in file!");
             }
 
-            employeeRepository.saveAll(lsEmployee);
+            loanRepository.saveAll(lsLoan);
             repository.saveAll(dataList);
             LoanRepaymentDetails saveDetails = LoanRepaymentDetails.builder()
                     .fileName(file.getOriginalFilename())
@@ -172,15 +174,15 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
 
     }
 
-    public Page<LoanRepayment> findByEmployeeIds(Long  employeeId, Pageable pageable){
+    public Page<LoanRepayment> findByLoanIds(Long   employeeId, Pageable pageable){
 
-        return  loanRepaymentRepository.findByEmployee_Id(employeeId ,pageable);
+        return  loanRepaymentRepository.findByLoan_Employee_EmployeeId(employeeId ,pageable);
 
     }
 
     @Transactional
-    public void  deleteByEmployeeId(Long employeeId) {
-      loanRepaymentRepository.deleteByEmployee_Id(employeeId);
+    public void  deleteByLoanId(String loanId) {
+      loanRepaymentRepository.deleteByLoan_Id(loanId);
 
 
     }
@@ -200,67 +202,55 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
 
 
   public LoanRepayment singleLoanRepaymnt(LoanRepayment loanRepayment){
-
-      Employee employee=employeeRepository.findByEmployeeIdAndStatus(loanRepayment.getEmployee().getEmployeeId() , Status.ACTIVE)
-              .orElseThrow(()-> new LoanRepaymentsException("Employee Not Found with in this ID...."+loanRepayment.getEmployee().getEmployeeId()));
-      double rate = employee.getAnnualInterest() / employee.getPeriod();
+      System.out.println("loan Repayments :"+loanRepayment);
+      Loan loan=loanRepository.findByEmployee_EmployeeIdAndStatus(loanRepayment.getLoan().getEmployee().getEmployeeId(),Status.ACTIVE);
+       double rate = loan.getAnnualInterest() / applicationProps.getAnnualPeriod();
       double emi=0;
       double interset=0;
       double principal=0;
       double remainningBalance=0;
-      if (employee.getOutStanding()<=0){
+      if (loan.getOutStanding()<=0){
           throw new LoanRepaymentsException("This Loan Repayments Completed  !");
       }
-      if(employee.getEmi()==0) {
+      if(loan.getEmi()==0) {
 
-          emi = (employee.getOutStanding() * rate * (Math.pow(1 + rate, employee.getPeriod()))) /
-                  ((Math.pow(1 + rate, employee.getPeriod())) - 1);
-          interset = employee.getOutStanding() * rate;
+          emi = (loan.getOutStanding() * rate * (Math.pow(1 + rate, loan.getPeriod()))) /
+                  ((Math.pow(1 + rate, loan.getPeriod())) - 1);
+          interset = loan.getOutStanding() * rate;
           principal = emi - interset;
-          remainningBalance = employee.getOutStanding() - principal;
-          System.out.println("outStand:..." + employee.getOutStanding());
+          remainningBalance = loan.getOutStanding() - principal;
+          System.out.println("outStand:..." + loan.getOutStanding());
           System.out.println("rate:..." + rate);
           System.out.println("Monthly:..." + emi);
           System.out.println("interset:.." + interset);
           System.out.println("princpal:.." + principal);
           System.out.println("remaining Balance:....." + remainningBalance);
-          employee.setOutStanding(remainningBalance);
-          employee.setEmi(emi);
+          loan.setOutStanding(remainningBalance);
+          loan.setEmi(emi);
       } else{
-          System.out.println("outStand:..." + employee.getOutStanding());
+          System.out.println("outStand:..." + loan.getOutStanding());
           System.out.println("rate:..." + rate);
-          System.out.println("Monthly:..." + employee.getEmi());
-          System.out.println("interset:.." + employee.getOutStanding()*rate);
-          System.out.println("princpal:.." + (employee.getEmi()-(employee.getOutStanding()*rate)));
-          System.out.println("remaining Balance:....." + (employee.getOutStanding()-(employee.getEmi()-(employee.getOutStanding()*rate))));
-          employee.setOutStanding((employee.getOutStanding()-(employee.getEmi()-(employee.getOutStanding()*rate))));
-          emi = employee.getEmi();
-          interset = employee.getOutStanding() * rate;
+          System.out.println("Monthly:..." + loan.getEmi());
+          System.out.println("interset:.." + loan.getOutStanding()*rate);
+          System.out.println("princpal:.." + (loan.getEmi()-(loan.getOutStanding()*rate)));
+          System.out.println("remaining Balance:....." + (loan.getOutStanding()-(loan.getEmi()-(loan.getOutStanding()*rate))));
+          loan.setOutStanding((loan.getOutStanding()-(loan.getEmi()-(loan.getOutStanding()*rate))));
+          emi = loan.getEmi();
+          interset = loan.getOutStanding() * rate;
           principal = emi - interset;
 
       }
       LoanRepayment entity = LoanRepayment.builder()
-              .employee(employee)
+              .loan(loan)
               .principal(principal)
               .interset(interset)
               .forMonth(loanRepayment.getForMonth())
               .crassLoanRepayment(loanRepayment.getCrassLoanRepayment())
               .build();
 
-    employeeRepository.save(employee);
+    loanRepository.save(loan);
 
-
-
-      return  entity ;
+    return  entity ;
   }
-
-
-
-
-
-
-
-
-
 
 }

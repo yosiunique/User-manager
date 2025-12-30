@@ -8,6 +8,5 @@ import java.util.Optional;
 
 @Repository
 public interface EmployeeRepository extends CommonJpaRepo<Employee ,Long> {
-    Optional<Employee> findByEmployeeIdAndStatus(Long employeeId , Status status);
-    List<Employee> findByEmployeeId(Long employeeId);
+    Optional<Employee> findByEmployeeId(Long employeeId);
 }

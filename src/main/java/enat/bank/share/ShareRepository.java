@@ -9,5 +9,5 @@ import java.util.Optional;
 @Repository
 public interface ShareRepository extends CommonJpaRepo<Share, Long> {
 
-    Optional<Share> findByEmployeeId(Long employeeId);
+    Optional<Share> findByEmployee_Id(Long employeeId);
 }
