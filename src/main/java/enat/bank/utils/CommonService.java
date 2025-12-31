@@ -1,5 +1,6 @@
 package enat.bank.utils;
 
+import enat.bank.user.UserDto;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

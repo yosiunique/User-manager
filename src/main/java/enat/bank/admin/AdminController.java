@@ -148,4 +148,15 @@ public class AdminController implements Common<User, String, String, UserDto> {
 
 
 
+    @GetMapping("/search-by-username/{username}")
+    public Page<User> searchByUsername(
+            @PathVariable String username,
+            Pageable pageable) {
+        return adminService.searchByUsername(username, pageable);
+    }
+
+
+
+
+
 }

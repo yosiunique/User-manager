@@ -23,16 +23,9 @@ public class EmployeeController implements Common<Employee ,String,String,Employ
     private final EmployeeService employeeService;
     @Override
     public ResponseEntity<Employee> create(Employee employee) {
-        if(employeeService.findByEmployeeIdAndStatus(employee.getEmployeeId(),Status.ACTIVE).isPresent()) {
-         Employee emp=employeeService.findByEmployeeIdAndStatus(employee.getEmployeeId(),employee.getStatus()).get();
-            if (emp.getStatus().equals(Status.ACTIVE) ) {
+        if(employeeService.findByEmployeeId(employee.getEmployeeId()).isPresent()) {
+
                 throw new RuntimeException("This Employee Already Created !");
-            } else if(Objects.equals(emp.getLoanId(),employee.getLoanId())){
-                throw new RuntimeException("This Employee Already Created !");
-            }
-            else {
-                System.out.println("this Employee ID ..."+employee.getLoanId() +"....."+emp.getLoanId());
-            }
         }
 
         return employeeService.create(employee);
@@ -40,11 +33,9 @@ public class EmployeeController implements Common<Employee ,String,String,Employ
 
     @Override
     public ResponseEntity<Employee> update(Long id, Employee employee) {
-        if(employeeService.findByEmployeeIdAndStatus(employee.getEmployeeId(),Status.ACTIVE).isPresent()) {
-            Employee emp = employeeService.findByEmployeeIdAndStatus(employee.getEmployeeId(), Status.ACTIVE).get();
-            if (emp.getStatus().equals(Status.ACTIVE) && employee.getStatus().equals(Status.ACTIVE) && emp.getId()!=employee.getId()) {
-                throw new RuntimeException("You can't Update this loanId b/c one  Active per Loan ID!");
-            }
+        if(employeeService.findByEmployeeId(employee.getEmployeeId()).isEmpty()) {
+                throw new RuntimeException("Employee not Found with this ID:"+employee.getEmployeeId());
+
         }
         return employeeService.update(employeeService.updateEmployee(id , employee),id);
     }
@@ -65,11 +56,6 @@ public class EmployeeController implements Common<Employee ,String,String,Employ
         return employeeService.getAllPageable(pageable);
     }
 
-    @GetMapping("/{employeeId}")
-    public List<Employee> getByEmployeeId(@PathVariable("employeeId")Long employeeId){
-
-        return employeeService.findByEmployeeId(employeeId);
-    }
 
 
     @PostMapping(value = "/import-csv",
@@ -77,8 +63,20 @@ public class EmployeeController implements Common<Employee ,String,String,Employ
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 
     public  List<Employee> importCsv(@RequestParam("file") MultipartFile file ){
-        System.out.println("called !.....");
+
     return employeeService.importCsv(file) ;
+    }
+
+
+
+
+
+
+    @GetMapping("/search-by-employee-id/{employeeId}")
+    public Page<Employee> searchByEmployeeId(
+            @PathVariable("employeeId") Long employeeId,
+            Pageable pageable) {
+        return employeeService.searchByEmployeeId(employeeId, pageable);
     }
 
 

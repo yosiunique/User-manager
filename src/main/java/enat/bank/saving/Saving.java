@@ -22,6 +22,5 @@ public class Saving extends Auditable {
     @JoinColumn(name = "employee_id")
     private Employee employee;
     private double   craSaving;
-    private Boolean status;
     private LocalDate forMonth;
 }

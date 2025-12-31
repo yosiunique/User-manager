@@ -2,8 +2,12 @@ package enat.bank.share;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
+import enat.bank.Employee.Employee;
+import enat.bank.Employee.EmployeeRepository;
 import enat.bank.exception.SavingAndLoanRepaymentSaveFileException;
 import enat.bank.utils.CommonService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -18,21 +22,22 @@ import java.util.Optional;
 @Service
 public class ShareService extends CommonService<Share ,Long ,Share> {
     private final ShareRepository shareRepository;
-    public ShareService(ShareRepository shareRepository) {
+    private final EmployeeRepository employeeRepositor;
+    public ShareService(ShareRepository shareRepository , EmployeeRepository employeeRepository) {
         super(shareRepository);
         this.shareRepository=shareRepository ;
+        this. employeeRepositor=employeeRepository;
     }
     public Optional<Share> getByEmployeeId(Long employeeId){
-        return  shareRepository.findByEmployeeId(employeeId);
+        return  shareRepository.findByEmployee_Id(employeeId);
     }
 
     protected Share updateShare(Long id , Share share)
     {
-        Share update=shareRepository.findByEmployeeId(share.getEmployeeId()).orElseThrow(()->
-                new RuntimeException("Employee Not Found with  this ID:"+id)
-        );
+        Share update=shareRepository.findById(id).orElseThrow(()->new RuntimeException("Share not found by this id:"+id));
+        Employee employee=employeeRepositor.findByEmployeeId(share.getEmployee().getEmployeeId()).get();
+        update.setEmployee(employee);
         update.setNoOfShare(share.getNoOfShare());
-        update.setFullName(share.getFullName());
         update.setTotalSaving(share.getTotalSaving());
         return update ;
     }
@@ -58,11 +63,10 @@ public class ShareService extends CommonService<Share ,Long ,Share> {
                     continue; // skip headers
                 }
 
-                DateTimeFormatter formatter = DateTimeFormatter.ofPattern("M/d/yyyy");
+
+                Employee employee=employeeRepositor.findByEmployeeId(Long.valueOf(fields[0].trim())).get();
                 Share  share=Share.builder()
-                        .employeeId(Long.valueOf(fields[0].trim()))
-                        .membershipId(fields[1].trim())
-                        .fullName(fields[2].trim())
+                        .employee(employee)
                         .totalSaving(parseDoubleSafe(fields[3].trim()))
                         .noOfShare(parseDoubleSafe(fields[4].trim()))
                         .share(parseDoubleSafe(fields[4].trim()))
@@ -89,5 +93,10 @@ public class ShareService extends CommonService<Share ,Long ,Share> {
         }
     }
 
+
+    public Page<Share>  search(Long employeeId , Pageable pageable ){
+
+        return shareRepository.findByEmployeeEmployeeIdContaining(employeeId,pageable);
+    }
 
 }
