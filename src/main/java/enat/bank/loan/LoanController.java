@@ -7,9 +7,12 @@ import enat.bank.utils.Common;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
+import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.util.List;
 import java.util.Optional;
 
 @RestController
@@ -56,4 +59,23 @@ public class LoanController implements Common<Loan, Long, String, Loan> {
     public Page<Loan> getAllPageable(Pageable pageable, @RequestParam(required = false) String name) {
         return loanService.getAllPageable(pageable);
     }
+
+    @PostMapping(value = "/import-csv", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
+    public List<Loan> importCsv(@RequestParam("file") MultipartFile file ){
+        return loanService.importCsv(file) ;
+    }
+
+
+
+
+    @GetMapping("/search-by-employee-id/{employeeId}")
+    public Page<Loan> searchByEmployeeId(
+            @PathVariable("employeeId") Long employeeId,
+            Pageable pageable) {
+        return loanService.searchByEmployeeId(employeeId, pageable);
+    }
+
+
+
+
 }

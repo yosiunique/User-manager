@@ -49,10 +49,7 @@ public class SavingService extends CommonService<Saving,Long,String > {
             while ((fields = reader.readNext()) != null) {
 
                 lineNumber++;
-                if (fields.length < 4) {
-                    System.err.println("Skipping invalid line: " + lineNumber);
-                    continue;
-                }
+
                 if(isFirst){
 
                     if(!fields[0].trim().equals(header[0]) &&!fields[1].trim().equals(header[1]) &&!fields[2].trim().equals(header[0]) &&!fields[2].trim().equals(header[2])  ){
@@ -65,7 +62,6 @@ public class SavingService extends CommonService<Saving,Long,String > {
                 }
 
                 String employeeId = fields[0].trim();
-                String fullName = fields[1].trim();
                 Double craSaving = parseDoubleSafe(fields[2]);
                 System.out.println("employee id..."+employeeId+"...crsSaving"+fields[2] + "...crsLoan"+fields[3]);
 
@@ -73,6 +69,7 @@ public class SavingService extends CommonService<Saving,Long,String > {
                 Employee employee =this.employeeRepository.findByEmployeeId(Long.valueOf(employeeId)).orElseThrow(()-> new SavingAndLoanRepaymentsNotFoundException("No employee is registered by this ID:..."+employeeId));
                 Saving entity = Saving.builder()
                         .employee(employee)
+                        .forMonth(forMonth)
                         .craSaving(craSaving)
                         .build();
 

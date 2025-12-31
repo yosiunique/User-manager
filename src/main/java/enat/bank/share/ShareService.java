@@ -6,6 +6,8 @@ import enat.bank.Employee.Employee;
 import enat.bank.Employee.EmployeeRepository;
 import enat.bank.exception.SavingAndLoanRepaymentSaveFileException;
 import enat.bank.utils.CommonService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -91,5 +93,10 @@ public class ShareService extends CommonService<Share ,Long ,Share> {
         }
     }
 
+
+    public Page<Share>  search(Long employeeId , Pageable pageable ){
+
+        return shareRepository.findByEmployeeEmployeeIdContaining(employeeId,pageable);
+    }
 
 }

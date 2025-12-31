@@ -27,7 +27,7 @@ import java.util.List;
 @Service
 public class LoanRepaymentService extends CommonService<LoanRepayment,Long,String> {
     private final ApplicationProps applicationProps ;
-    private final String[] header={"employeeId","fullName","craSaving" };
+    private final String[] header={"employeeId","fullName","loanAmount" };
     private final LoanRepaymentRepository loanRepaymentRepository;
     private  final LoanRepaymentDetailsRepository loanRepaymentDetailsRepository;
     private final LoanRepository loanRepository;
@@ -54,10 +54,6 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
 
             while ((fields = reader.readNext()) != null) {
                 lineNumber++;
-                if (fields.length < 3) {
-                    System.err.println("Skipping invalid line: " + lineNumber);
-                    continue;
-                }
 
                 if (isFirst) {
                     if(!fields[0].trim().equals(header[0]) &&!fields[1].trim().equals(header[1]) &&!fields[2].trim().equals(header[0]) &&!fields[2].trim().equals(header[2])  ){
@@ -79,9 +75,11 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
 
                 String loanId=fields[3].trim();
                 Double crassLoanRepayment = parseDoubleSafe(fields[2]);
-                Loan loan=loanRepository.findByEmployee_IdAndLoanIdAndStatus(Long.valueOf(employeeId),loanId,Status.ACTIVE)
-                        .orElseThrow(()-> new LoanRepaymentsException("Employee Not Found with in this ID...."+employeeId));
-                 double rate = applicationProps.getAnnualInterset() / applicationProps.getAnnualPeriod();
+                Loan loan=loanRepository.findByEmployee_EmployeeIdAndStatus(Long.valueOf(employeeId),Status.ACTIVE);
+                if(loan==null){
+                        throw  new LoanRepaymentsException("Employee Not Found with in this ID...."+employeeId);
+                }
+                 double rate = loan.getAnnualInterest() / applicationProps.getAnnualPeriod();
                  double emi=0;
                  double interset=0;
                  double principal=0;

@@ -20,7 +20,7 @@ import java.time.LocalDate;
 @NoArgsConstructor
 public class Loan {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     @Column(nullable = false)
     private String loanId;

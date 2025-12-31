@@ -63,8 +63,20 @@ public class EmployeeController implements Common<Employee ,String,String,Employ
             consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
 
     public  List<Employee> importCsv(@RequestParam("file") MultipartFile file ){
-        System.out.println("called !.....");
+
     return employeeService.importCsv(file) ;
+    }
+
+
+
+
+
+
+    @GetMapping("/search-by-employee-id/{employeeId}")
+    public Page<Employee> searchByEmployeeId(
+            @PathVariable("employeeId") Long employeeId,
+            Pageable pageable) {
+        return employeeService.searchByEmployeeId(employeeId, pageable);
     }
 
 

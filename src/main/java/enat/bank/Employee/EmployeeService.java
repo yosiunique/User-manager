@@ -3,6 +3,8 @@ package enat.bank.Employee;
 import com.opencsv.CSVReader;
 import enat.bank.utils.ApplicationProps;
 import enat.bank.utils.CommonService;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStreamReader;
@@ -90,6 +92,12 @@ public class EmployeeService extends CommonService<Employee ,Long, Employee> {
     }
 
 
+
+
+
+   public Page<Employee> searchByEmployeeId(Long  employeeId , Pageable pageable){
+        return employeeRepository.findByEmployeeIdContaining(employeeId ,pageable);
+   }
 
 
 
