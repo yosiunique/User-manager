@@ -1,5 +1,7 @@
 package enat.bank.loansRepayments;
 
+import enat.bank.loan.Loan;
+import enat.bank.loan.LoanRepository;
 import enat.bank.utils.Common;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,7 +23,7 @@ import java.util.Optional;
 public class LoanRepaymentController implements Common<LoanRepayment, String, String, LoanRepayment> {
 
     private final LoanRepaymentService loanRepaymentService;
-
+   private final LoanRepository loanRepository;
     @Override
     @Operation(summary = "Create repayment record", description = "Creates a new saving or loan repayment record.")
     public ResponseEntity<LoanRepayment> create(@RequestBody LoanRepayment loanRepayment) {
@@ -85,6 +87,23 @@ public class LoanRepaymentController implements Common<LoanRepayment, String, St
     public Double countAllLoanRepayments(){
         return loanRepaymentService.sumAllLoanRepayments();
     }
+
+
+
+
+    @GetMapping("data-uploading")
+    public List<LoanRepayment> updateFornow(){
+        List<Loan>  employee=loanRepository.findAll();
+
+        for (Loan l:employee){
+
+            loanRepaymentService.generateRepaymentsUpToNow(l.getEmployee().getEmployeeId());
+        }
+
+        return  null;
+    }
+
+
 
 
 }

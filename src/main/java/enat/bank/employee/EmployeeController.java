@@ -1,4 +1,4 @@
-package enat.bank.Employee;
+package enat.bank.employee;
 
 import enat.bank.utils.Common;
 import lombok.RequiredArgsConstructor;
@@ -8,12 +8,8 @@ import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
-import org.springframework.http.MediaType;
 
-import java.security.PublicKey;
-import java.time.LocalDate;
 import java.util.List;
-import java.util.Objects;
 import java.util.Optional;
 
 @RestController

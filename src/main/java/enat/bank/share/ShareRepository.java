@@ -13,7 +13,7 @@ import java.util.Optional;
 @Repository
 public interface ShareRepository extends CommonJpaRepo<Share, Long> {
 
-    Optional<Share> findByEmployee_Id(Long employeeId);
+    Optional<Share> findByEmployee_EmployeeId(Long employeeId);
 
     @Query("SELECT s FROM Share s  where s.employee.employeeId =:employeeId ")
     Page<Share> findByEmployeeEmployeeIdContaining(@Param("employeeId") Long employeeId, Pageable pageable);

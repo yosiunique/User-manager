@@ -1,6 +1,8 @@
 package enat.bank.admin;
 
 import enat.bank.user.User;
+import enat.bank.user.UserDto;
+import enat.bank.user.UserMapper;
 import enat.bank.user.UserRepository;
 import enat.bank.utils.CommonService;
 import org.springframework.data.domain.Page;
@@ -20,9 +22,11 @@ public class AdminService extends CommonService<User,Long ,String> {
     }
 
 
-  Page<User> searchByUsername(String username, Pageable pageable){
+  Page<UserDto> searchByUsername(String username, Pageable pageable){
 
-        return  userRepository.findByUserNameContainingIgnoreCase(username ,pageable);
+        Page<User>  users=userRepository.findByUserNameContainingIgnoreCase(username ,pageable);
+
+        return  users.map(UserMapper::toDto);
   }
 
 }

@@ -1,5 +1,5 @@
 package enat.bank.share;
-import enat.bank.Employee.Employee;
+import enat.bank.employee.Employee;
 import enat.bank.utils.Auditable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -20,8 +20,10 @@ public class Share extends Auditable {
     @OneToOne
     @JoinColumn(name="employee_id")
     private Employee employee;
-    private Double  totalSaving;
     private Double  share;
     private Double  noOfShare;
+
+
+
 
 }

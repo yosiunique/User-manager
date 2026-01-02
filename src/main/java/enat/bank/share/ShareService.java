@@ -2,8 +2,8 @@ package enat.bank.share;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
-import enat.bank.Employee.Employee;
-import enat.bank.Employee.EmployeeRepository;
+import enat.bank.employee.Employee;
+import enat.bank.employee.EmployeeRepository;
 import enat.bank.exception.SavingAndLoanRepaymentSaveFileException;
 import enat.bank.utils.CommonService;
 import org.springframework.data.domain.Page;
@@ -14,7 +14,6 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
-import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,7 +28,7 @@ public class ShareService extends CommonService<Share ,Long ,Share> {
         this. employeeRepositor=employeeRepository;
     }
     public Optional<Share> getByEmployeeId(Long employeeId){
-        return  shareRepository.findByEmployee_Id(employeeId);
+        return  shareRepository.findByEmployee_EmployeeId(employeeId);
     }
 
     protected Share updateShare(Long id , Share share)
@@ -38,7 +37,7 @@ public class ShareService extends CommonService<Share ,Long ,Share> {
         Employee employee=employeeRepositor.findByEmployeeId(share.getEmployee().getEmployeeId()).get();
         update.setEmployee(employee);
         update.setNoOfShare(share.getNoOfShare());
-        update.setTotalSaving(share.getTotalSaving());
+//        update.setTotalSaving(share.getTotalSaving());
         return update ;
     }
 
@@ -67,7 +66,7 @@ public class ShareService extends CommonService<Share ,Long ,Share> {
                 Employee employee=employeeRepositor.findByEmployeeId(Long.valueOf(fields[0].trim())).get();
                 Share  share=Share.builder()
                         .employee(employee)
-                        .totalSaving(parseDoubleSafe(fields[3].trim()))
+//                        .totalSaving(parseDoubleSafe(fields[3].trim()))
                         .noOfShare(parseDoubleSafe(fields[4].trim()))
                         .share(parseDoubleSafe(fields[4].trim()))
                         .build();

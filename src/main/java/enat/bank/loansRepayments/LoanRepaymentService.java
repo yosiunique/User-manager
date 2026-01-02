@@ -2,7 +2,7 @@ package enat.bank.loansRepayments;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
-import enat.bank.Employee.Status;
+import enat.bank.employee.Status;
 import enat.bank.exception.LoanRepaymentsException;
 import enat.bank.exception.SavingAndLoanRepaymentSaveFileException;
 import enat.bank.exception.SavingAndLoanRepaymentsNotFoundException;
@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -47,6 +48,8 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
     public ResponseEntity<List<LoanRepayment>> importCsv(MultipartFile file ,LocalDate forMonth) {
         List<LoanRepayment> dataList = new ArrayList<>();
         List<Loan> lsLoan=new ArrayList<>();
+        LocalDate lastMonth=LocalDate.now().minusMonths(1);
+        System.out.println("This Month:"+lastMonth);
         try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
             String[] fields;
             boolean isFirst = true;
@@ -63,6 +66,10 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
                     continue; // skip headers
                 }
 
+                for (String field : fields) {
+                    System.out.println("fields :"+field);
+
+                }
                 /***
                  *
                  *
@@ -72,19 +79,19 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
                  * ****/
                 String employeeId = fields[0].trim();
                 String fullName = fields[1].trim();
-
                 String loanId=fields[3].trim();
                 Double crassLoanRepayment = parseDoubleSafe(fields[2]);
                 Loan loan=loanRepository.findByEmployee_EmployeeIdAndStatus(Long.valueOf(employeeId),Status.ACTIVE);
                 if(loan==null){
                         throw  new LoanRepaymentsException("Employee Not Found with in this ID...."+employeeId);
                 }
-                 double rate = loan.getAnnualInterest() / applicationProps.getAnnualPeriod();
+//                checkConsecutiveMonth(loan, forMonth);
+                double rate = loan.getAnnualInterest() / applicationProps.getAnnualPeriod();
                  double emi=0;
                  double interset=0;
                  double principal=0;
                  double remainningBalance=0;
-                 if (loan.getOutStanding()<=0){
+                 if (loan.getOutStanding()==0){
                      throw new LoanRepaymentsException("This Loan Repayments Completed  !");
                  }
                if(loan.getEmi()==0) {
@@ -102,6 +109,7 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
                     System.out.println("remaining Balance:....." + remainningBalance);
                     loan.setOutStanding(remainningBalance);
                     loan.setEmi(emi);
+                   loan.setRemainingPeriod(loan.getRemainingPeriod()-1);
                 } else{
                     System.out.println("outStand:..." + loan.getOutStanding());
                     System.out.println("rate:..." + rate);
@@ -110,6 +118,7 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
                     System.out.println("princpal:.." + (loan.getEmi()-(loan.getOutStanding()*rate)));
                     System.out.println("remaining Balance:....." + (loan.getOutStanding()-(loan.getEmi()-(loan.getOutStanding()*rate))));
                     loan.setOutStanding((loan.getOutStanding()-(loan.getEmi()-(loan.getOutStanding()*rate))));
+                   loan.setRemainingPeriod(loan.getRemainingPeriod()-1);
                    emi = loan.getEmi();
                    interset = loan.getOutStanding() * rate;
                    principal = emi - interset;
@@ -210,6 +219,7 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
       if (loan.getOutStanding()<=0){
           throw new LoanRepaymentsException("This Loan Repayments Completed  !");
       }
+       checkConsecutiveMonth(loan,loanRepayment.getForMonth());
       if(loan.getEmi()==0) {
 
           emi = (loan.getOutStanding() * rate * (Math.pow(1 + rate, loan.getPeriod()))) /
@@ -225,6 +235,7 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
           System.out.println("remaining Balance:....." + remainningBalance);
           loan.setOutStanding(remainningBalance);
           loan.setEmi(emi);
+          loan.setRemainingPeriod(loan.getRemainingPeriod()-1);
       } else{
           System.out.println("outStand:..." + loan.getOutStanding());
           System.out.println("rate:..." + rate);
@@ -233,6 +244,7 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
           System.out.println("princpal:.." + (loan.getEmi()-(loan.getOutStanding()*rate)));
           System.out.println("remaining Balance:....." + (loan.getOutStanding()-(loan.getEmi()-(loan.getOutStanding()*rate))));
           loan.setOutStanding((loan.getOutStanding()-(loan.getEmi()-(loan.getOutStanding()*rate))));
+         loan.setRemainingPeriod(loan.getRemainingPeriod()-1);
           emi = loan.getEmi();
           interset = loan.getOutStanding() * rate;
           principal = emi - interset;
@@ -250,5 +262,138 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
 
     return  entity ;
   }
+
+
+
+
+
+
+
+
+
+    private void checkConsecutiveMonth(Loan loan, LocalDate repaymentDate) {
+        if (loan.getLastPaidMonth() == null) {
+            // No previous payment, allow the first repayment
+            return;
+        }
+
+        // Convert last paid month to YearMonth
+    YearMonth lastPaid = YearMonth.from(loan.getLastPaidMonth());
+      YearMonth repaymentMonth =YearMonth.from(repaymentDate);
+
+     YearMonth expectedNextMonth = lastPaid.plusMonths(1);
+
+        if (!repaymentMonth.equals(expectedNextMonth)) {
+            throw new LoanRepaymentsException(
+                    "Invalid repayment date for employee " + loan.getEmployee().getEmployeeId() +
+                            ". Expected: " + expectedNextMonth + ", but got: " + repaymentMonth
+            );
+        }
+    }
+
+
+
+
+
+
+
+
+
+    @Transactional
+    public List<LoanRepayment> generateRepaymentsUpToNow(Long employeeId) {
+
+        Loan loan = loanRepository
+                .findByEmployee_EmployeeIdAndStatus(employeeId, Status.ACTIVE);
+
+        if (loan == null) {
+            throw new LoanRepaymentsException("Active loan not found for employee " + employeeId);
+        }
+
+        if (loan.getEffectiveDate() == null) {
+            throw new LoanRepaymentsException("Loan effective date is missing");
+        }
+
+        if (loan.getOutStanding() <= 0 || loan.getRemainingPeriod() <= 0) {
+            throw new LoanRepaymentsException("Loan already completed");
+        }
+
+        List<LoanRepayment> repayments = new ArrayList<>();
+
+        double monthlyRate =
+                loan.getAnnualInterest() / applicationProps.getAnnualPeriod();
+
+        YearMonth startMonth = YearMonth.from(loan.getEffectiveDate());
+        YearMonth endMonth = YearMonth.now().minusMonths(1);
+
+        // If repayments already started, continue from lastPaidMonth
+        if (loan.getLastPaidMonth() != null) {
+            startMonth = YearMonth.from(loan.getLastPaidMonth()).plusMonths(1);
+        }
+
+        for (YearMonth ym = startMonth;
+             !ym.isAfter(endMonth);
+             ym = ym.plusMonths(1)) {
+
+            if (loan.getOutStanding() <= 0 || loan.getRemainingPeriod() <= 0) {
+                break;
+            }
+
+            double emi;
+            double interest;
+            double principal;
+
+            if (loan.getEmi() == 0) {
+                // EMI calculation (only once)
+                emi = (loan.getOutStanding() * monthlyRate *
+                        Math.pow(1 + monthlyRate, loan.getRemainingPeriod())) /
+                        (Math.pow(1 + monthlyRate, loan.getRemainingPeriod()) - 1);
+
+                loan.setEmi(emi);
+            } else {
+                emi = loan.getEmi();
+            }
+
+            interest = loan.getOutStanding() * monthlyRate;
+            principal = emi - interest;
+
+            if (principal > loan.getOutStanding()) {
+                principal = loan.getOutStanding();
+                emi = principal + interest;
+            }
+
+            double newOutstanding = loan.getOutStanding() - principal;
+
+            LoanRepayment repayment = LoanRepayment.builder()
+                    .loan(loan)
+                    .forMonth(ym.atDay(1))
+                    .principal(principal)
+                    .interset(interest)
+                    .crassLoanRepayment(emi)
+                    .build();
+
+            repayments.add(repayment);
+
+            // update loan
+            loan.setOutStanding(newOutstanding);
+            loan.setRemainingPeriod(loan.getRemainingPeriod() - 1);
+            loan.setLastPaidMonth(ym.atDay(1));
+        }
+
+        loanRepository.save(loan);
+        loanRepaymentRepository.saveAll(repayments);
+
+        return repayments;
+    }
+
+
+
+
+
+
+
+
+
+
+
 
 }
