@@ -1,4 +1,4 @@
-package enat.bank.Employee;
+package enat.bank.employee;
 
 
 import lombok.Getter;

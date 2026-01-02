@@ -49,7 +49,9 @@ public class AdminController implements Common<User, String, String, UserDto> {
         if (exist != null) {
             throw new UserAlreadyExistException("User already exists!");
         }
-        return adminService.create(user);
+         adminService.create(user);
+        user.setPassword("");
+        return  ResponseEntity.ok(user);
     }
 
 
@@ -72,7 +74,9 @@ public class AdminController implements Common<User, String, String, UserDto> {
         exist.setEnable(user.getEnable());
         exist.setPhoneNumber(user.getPhoneNumber());
         exist.setAttribute(user.getAttribute());
-        return adminService.update(exist, id);
+        adminService.update(exist, id);
+          exist.setPassword("");
+         return ResponseEntity.ok(exist);
     }
 
 
@@ -149,7 +153,7 @@ public class AdminController implements Common<User, String, String, UserDto> {
 
 
     @GetMapping("/search-by-username/{username}")
-    public Page<User> searchByUsername(
+    public Page<UserDto> searchByUsername(
             @PathVariable String username,
             Pageable pageable) {
         return adminService.searchByUsername(username, pageable);

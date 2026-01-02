@@ -1,9 +1,9 @@
 package enat.bank.loan;
 
 import com.opencsv.CSVReader;
-import enat.bank.Employee.Employee;
-import enat.bank.Employee.EmployeeRepository;
-import enat.bank.Employee.Status;
+import enat.bank.employee.Employee;
+import enat.bank.employee.EmployeeRepository;
+import enat.bank.employee.Status;
 import enat.bank.exception.LoanException;
 import enat.bank.utils.CommonService;
 import org.springframework.data.domain.Page;
@@ -53,12 +53,12 @@ public class LoanService extends CommonService<Loan, Long, Loan> {
                 loan.getEmployee().getEmployeeId()).get();
 
         update.setEmployee(employee);
-//        update.setEffectiveDate(loan.getEffectiveDate());
-//        update.setOutStanding(loan.getOutStanding());
-//        update.setFirstOutStanding(loan.getFirstOutStanding());
-//        update.setAnnualInterest(loan.getAnnualInterest());
-//        update.setPeriod(loan.getPeriod());
-//        update.setEmi(loan.getEmi());
+        update.setEffectiveDate(loan.getEffectiveDate());
+        update.setOutStanding(loan.getOutStanding());
+        update.setFirstOutStanding(loan.getFirstOutStanding());
+        update.setAnnualInterest(loan.getAnnualInterest());
+        update.setPeriod(loan.getPeriod());
+        update.setEmi(loan.getEmi());
         update.setStatus(loan.getStatus());
 
         return loanRepository.save(update);
@@ -89,6 +89,7 @@ public class LoanService extends CommonService<Loan, Long, Loan> {
                         .loanId(fields[2].trim())
                         .employee(employee)
                         .effectiveDate(LocalDate.parse(fields[4].trim(), formatter))
+                        .lastPaidMonth(LocalDate.parse(fields[4].trim(),formatter))
                         .outStanding(parseDoubleSafe(fields[5].trim()))
                         .emi(.0)
                         .annualInterest(0.09)

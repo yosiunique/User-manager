@@ -2,9 +2,8 @@ package enat.bank.saving;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
-import enat.bank.Employee.Employee;
-import enat.bank.Employee.EmployeeRepository;
-import enat.bank.Employee.Status;
+import enat.bank.employee.Employee;
+import enat.bank.employee.EmployeeRepository;
 import enat.bank.exception.SavingAndLoanRepaymentSaveFileException;
 import enat.bank.utils.CommonService;
 import enat.bank.exception.SavingAndLoanRepaymentsNotFoundException;
@@ -117,7 +116,7 @@ public class SavingService extends CommonService<Saving,Long,String > {
 
     public Page<Saving> findByEmployeeIds(Long  employeeId, Pageable pageable){
 
-        return  savingRepository.findByEmployee_Id(employeeId ,pageable);
+        return  savingRepository.findByEmployee_EmployeeId(employeeId ,pageable);
 
     }
 

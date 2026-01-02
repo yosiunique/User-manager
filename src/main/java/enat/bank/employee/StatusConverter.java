@@ -1,4 +1,4 @@
-package enat.bank.Employee;
+package enat.bank.employee;
 
 import jakarta.persistence.AttributeConverter;
 import jakarta.persistence.Converter;

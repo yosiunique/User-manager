@@ -1,9 +1,10 @@
 package enat.bank.saving;
 
-import enat.bank.Employee.Employee;
+import enat.bank.employee.Employee;
 import enat.bank.utils.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
+
 
 import java.time.LocalDate;
 

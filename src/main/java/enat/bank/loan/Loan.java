@@ -1,8 +1,8 @@
 package enat.bank.loan;
 
-import enat.bank.Employee.Employee;
-import enat.bank.Employee.Status;
-import enat.bank.Employee.StatusConverter;
+import enat.bank.employee.Employee;
+import enat.bank.employee.Status;
+import enat.bank.employee.StatusConverter;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -29,7 +29,9 @@ public class Loan {
     private Employee employee;
     @Column(nullable = false)
     private LocalDate effectiveDate;
-    @Column(nullable = false)
+//    @Column(nullable = false)
+    private LocalDate lastPaidMonth;
+    @Column(nullable=false)
     private  Double outStanding;
     @Convert(converter = StatusConverter.class)
     private Status status;
@@ -39,6 +41,7 @@ public class Loan {
     private  double annualInterest;
     @Column(nullable = false)
     private double  period;
+    private Integer remainingPeriod;
     @Column(nullable = false)
     private double firstOutStanding;
 

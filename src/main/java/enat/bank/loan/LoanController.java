@@ -1,7 +1,7 @@
 package enat.bank.loan;
 
-import enat.bank.Employee.Employee;
-import enat.bank.Employee.EmployeeRepository;
+import enat.bank.employee.Employee;
+import enat.bank.employee.EmployeeRepository;
 import enat.bank.exception.LoanException;
 import enat.bank.utils.Common;
 import lombok.RequiredArgsConstructor;
