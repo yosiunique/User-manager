@@ -88,12 +88,13 @@ public class LoanService extends CommonService<Loan, Long, Loan> {
                 Loan loan = Loan.builder()
                         .loanId(fields[2].trim())
                         .employee(employee)
-                        .effectiveDate(LocalDate.parse(fields[4].trim(), formatter))
-                        .lastPaidMonth(LocalDate.parse(fields[4].trim(),formatter))
+                        .effectiveDate(LocalDate.parse(validFormat(fields[4].trim()), formatter))
+                        .lastPaidMonth(LocalDate.parse(validFormat(fields[4].trim()),formatter))
                         .outStanding(parseDoubleSafe(fields[5].trim()))
                         .emi(.0)
                         .annualInterest(0.09)
                         .period(84)
+                        .remainingPeriod(84)
                         .firstOutStanding(parseDoubleSafe(fields[5].trim()))
                         .status(Status.ACTIVE)
                         .build();
@@ -120,6 +121,25 @@ public class LoanService extends CommonService<Loan, Long, Loan> {
 
     }
 
+
+
+
+    private String  validFormat(String date){
+
+        String[] parts = date.split("/");
+
+        if (parts.length != 3) {
+            throw new IllegalArgumentException("Invalid date format: " + date);
+        }
+// normalize date and month
+        String month = parts[0].length() == 1 ? "0" + parts[0] : parts[0];
+        String day = parts[1].length() == 1 ? "0" + parts[1] : parts[1];
+        String year = parts[2];
+
+        return day+"/"+month+"/"+year;
+
+
+    }
 
     Page<Loan> searchByEmployeeId(Long employeeId, Pageable pageable){
 
