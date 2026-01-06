@@ -326,9 +326,9 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
         YearMonth endMonth = YearMonth.now().minusMonths(1);
 
         // If repayments already started, continue from lastPaidMonth
-        if (loan.getLastPaidMonth() != null) {
-            startMonth = YearMonth.from(loan.getLastPaidMonth()).plusMonths(1);
-        }
+//        if (loan.getLastPaidMonth() != null && loan.em) {
+//            startMonth = YearMonth.from(loan.getLastPaidMonth()).plusMonths(1);
+//        }
 
         for (YearMonth ym = startMonth;
              !ym.isAfter(endMonth);
