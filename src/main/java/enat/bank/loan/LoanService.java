@@ -14,6 +14,7 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.InputStreamReader;
 import java.nio.charset.StandardCharsets;
 import java.time.LocalDate;
+import java.time.Month;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.List;
@@ -83,8 +84,16 @@ public class LoanService extends CommonService<Loan, Long, Loan> {
                 String[] finalFields = fields;
                 Employee employee = employeeRepository.findByEmployeeId(Long.valueOf(fields[0].trim()))
                         .orElseThrow(() -> new RuntimeException("not found employee with this ID:" + Long.valueOf(finalFields[0].trim())));
+                int period=0;
 
                 DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd/MM/yyyy");
+                if(LocalDate.parse(validFormat(fields[4].trim()), formatter).isBefore(LocalDate.of(2025, Month.AUGUST, 1))){
+                    period=60;
+
+                }
+                else {
+                    period =84 ;
+                }
                 Loan loan = Loan.builder()
                         .loanId(fields[2].trim())
                         .employee(employee)
@@ -93,8 +102,8 @@ public class LoanService extends CommonService<Loan, Long, Loan> {
                         .outStanding(parseDoubleSafe(fields[5].trim()))
                         .emi(.0)
                         .annualInterest(0.09)
-                        .period(84)
-                        .remainingPeriod(84)
+                        .period(period)
+                        .remainingPeriod(period)
                         .firstOutStanding(parseDoubleSafe(fields[5].trim()))
                         .status(Status.ACTIVE)
                         .build();

@@ -51,18 +51,18 @@ public class SavingService extends CommonService<Saving,Long,String > {
 
                 if(isFirst){
 
-                    if(!fields[0].trim().equals(header[0]) &&!fields[1].trim().equals(header[1]) &&!fields[2].trim().equals(header[0]) &&!fields[2].trim().equals(header[2])  ){
-                        throw new SavingAndLoanRepaymentSaveFileException("invalid header pls Enter valid heeaders Name !");
-                    }
+//                    if(!fields[0].trim().equals(header[0]) &&!fields[1].trim().equals(header[1]) &&!fields[2].trim().equals(header[0]) &&!fields[2].trim().equals(header[2])  ){
+//                        throw new SavingAndLoanRepaymentSaveFileException("invalid header pls Enter valid headers Name !");
+//                    }
 
                     System.err.println("headers"+fields);
                     isFirst=false;
                     continue;
                 }
 
-                String employeeId = fields[0].trim();
-                Double craSaving = parseDoubleSafe(fields[2]);
-                System.out.println("employee id..."+employeeId+"...crsSaving"+fields[2] + "...crsLoan"+fields[3]);
+               Long  employeeId = Long.valueOf(fields[0].trim());
+                Double craSaving = parseDoubleSafe(fields[3]);
+//                System.out.println("employee id..."+employeeId+"...crsSaving"+fields[2] + "...crsLoan"+fields[3]);
 
 
                 Employee employee =this.employeeRepository.findByEmployeeId(Long.valueOf(employeeId)).orElseThrow(()-> new SavingAndLoanRepaymentsNotFoundException("No employee is registered by this ID:..."+employeeId));

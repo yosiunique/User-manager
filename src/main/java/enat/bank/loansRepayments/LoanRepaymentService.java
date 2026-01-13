@@ -181,9 +181,17 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
 
     }
 
-    public Page<LoanRepayment> findByLoanIds(Long   employeeId, Pageable pageable){
+    public Page<LoanRepayment> findByLoanIds(Long  employeeId, Pageable pageable){
 
         return  loanRepaymentRepository.findByLoan_Employee_EmployeeId(employeeId ,pageable);
+
+    }
+
+
+
+    public Page<LoanRepayment> findByFullName(String  fullName, Pageable pageable){
+
+        return  loanRepaymentRepository.findByFullName(fullName ,pageable);
 
     }
 
@@ -385,6 +393,14 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
         return repayments;
     }
 
+
+
+
+
+
+    public Page<LoanRepayment> getAllLoanRepaymentPageable(Pageable pageable){
+       return loanRepaymentRepository.getAllLoanRepaymentPageable(pageable);
+    }
 
 
 

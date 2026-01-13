@@ -54,15 +54,22 @@ public class LoanRepaymentController implements Common<LoanRepayment, String, St
     @Override
     @Operation(summary = "Get all repayments", description = "Retrieves all repayment records with pagination.")
     public Page<LoanRepayment> getAllPageable(Pageable pageable, String name) {
-        return loanRepaymentService.getAllPageable(pageable);
+        return loanRepaymentService.getAllLoanRepaymentPageable(pageable);
     }
 
 
     @GetMapping("search-by-employee-id/{employeeId}")
     public Page<LoanRepayment>  findByEmployeeIds(@PathVariable("employeeId") Long   loanId , Pageable pageable){
-        return loanRepaymentService.findByLoanIds(loanId,pageable);
+        return loanRepaymentService.findByLoanIds(loanId ,pageable);
 
     }
+
+    @GetMapping("search-by-employee-name/{fullName}")
+    public Page<LoanRepayment>  findByEmployeeFullName(@PathVariable("fullName") String   fullName , Pageable pageable){
+        return loanRepaymentService.findByFullName(fullName ,pageable);
+
+    }
+
 
     @DeleteMapping("delete-by-employee-id/{employeeId}")
     public void deleteByEmployeeId(@PathVariable("employeeId") String  loanId) {
