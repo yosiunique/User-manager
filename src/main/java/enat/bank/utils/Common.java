@@ -1,5 +1,6 @@
 package enat.bank.utils;
 
+import enat.bank.exception.LoanException;
 import enat.bank.exception.ShareException;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -11,9 +12,9 @@ import java.util.Optional;
 
 public interface  Common<E,D,O,Dto> {
      @PostMapping
-     ResponseEntity<E> create(@RequestBody  E e) throws ShareException;
+     ResponseEntity<E> create(@RequestBody  E e) throws ShareException, LoanException;
      @PutMapping("/{id}")
-     ResponseEntity<E> update(@PathVariable("id") Long id ,@RequestBody E e);
+     ResponseEntity<E> update(@PathVariable("id") Long id ,@RequestBody E e) throws LoanException;
      @DeleteMapping("/{id}")
      void delete(@PathVariable("id") Long id);
      @GetMapping("/{id}")

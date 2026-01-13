@@ -1,5 +1,5 @@
-package enat.bank.share;
-import enat.bank.employee.Employee;
+package enat.bank.employee;
+
 import enat.bank.utils.Auditable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -7,23 +7,21 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
-@Entity
-@Table(name="share")
-@Data
 @Builder
+@Entity
+@Table(name="employee")
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class Share extends Auditable {
-   @Id
+public class Employee extends Auditable {
+    @Id
    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-    @OneToOne
-    @JoinColumn(name="employee_id")
-    private Employee employee;
-    private Double  share;
-    private Double  noOfShare;
-
-
-
+    @Column(nullable=false)
+    private Long employeeId;
+    @Column(nullable = false)
+    private String membershipId;
+    @Column(nullable = false)
+    private String employeeFullName;
 
 }

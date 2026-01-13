@@ -2,9 +2,8 @@ package enat.bank.saving;
 
 import com.opencsv.CSVReader;
 import com.opencsv.exceptions.CsvValidationException;
-import enat.bank.Employee.Employee;
-import enat.bank.Employee.EmployeeRepository;
-import enat.bank.Employee.Status;
+import enat.bank.employee.Employee;
+import enat.bank.employee.EmployeeRepository;
 import enat.bank.exception.SavingAndLoanRepaymentSaveFileException;
 import enat.bank.utils.CommonService;
 import enat.bank.exception.SavingAndLoanRepaymentsNotFoundException;
@@ -49,10 +48,7 @@ public class SavingService extends CommonService<Saving,Long,String > {
             while ((fields = reader.readNext()) != null) {
 
                 lineNumber++;
-                if (fields.length < 4) {
-                    System.err.println("Skipping invalid line: " + lineNumber);
-                    continue;
-                }
+
                 if(isFirst){
 
                     if(!fields[0].trim().equals(header[0]) &&!fields[1].trim().equals(header[1]) &&!fields[2].trim().equals(header[0]) &&!fields[2].trim().equals(header[2])  ){
@@ -65,15 +61,14 @@ public class SavingService extends CommonService<Saving,Long,String > {
                 }
 
                 String employeeId = fields[0].trim();
-                String fullName = fields[1].trim();
                 Double craSaving = parseDoubleSafe(fields[2]);
                 System.out.println("employee id..."+employeeId+"...crsSaving"+fields[2] + "...crsLoan"+fields[3]);
 
 
-                Employee employee =this.employeeRepository.findByEmployeeIdAndStatus(Long.valueOf(employeeId), Status.ACTIVE).orElseThrow(()-> new SavingAndLoanRepaymentsNotFoundException("No employee is registered by this ID:..."+employeeId));
+                Employee employee =this.employeeRepository.findByEmployeeId(Long.valueOf(employeeId)).orElseThrow(()-> new SavingAndLoanRepaymentsNotFoundException("No employee is registered by this ID:..."+employeeId));
                 Saving entity = Saving.builder()
                         .employee(employee)
-                        .fullName(fullName)
+                        .forMonth(forMonth)
                         .craSaving(craSaving)
                         .build();
 
@@ -115,14 +110,13 @@ public class SavingService extends CommonService<Saving,Long,String > {
         Saving saving = savingRepository.findById(id).orElseThrow(()->
                 new SavingAndLoanRepaymentsNotFoundException("SavingAndLoanRepayments record not found with this Id:.."+id));
         saving.setCraSaving(update.getCraSaving());
-        saving.setFullName(update.getFullName());
         return saving;
 
     }
 
     public Page<Saving> findByEmployeeIds(Long  employeeId, Pageable pageable){
 
-        return  savingRepository.findByEmployee_Id(employeeId ,pageable);
+        return  savingRepository.findByEmployee_EmployeeId(employeeId ,pageable);
 
     }
 

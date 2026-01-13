@@ -1,9 +1,10 @@
 package enat.bank.saving;
 
-import enat.bank.Employee.Employee;
+import enat.bank.employee.Employee;
 import enat.bank.utils.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
+
 
 import java.time.LocalDate;
 
@@ -21,11 +22,6 @@ public class Saving extends Auditable {
     @ManyToOne
     @JoinColumn(name = "employee_id")
     private Employee employee;
-    private String fullName;
     private double   craSaving;
-    private Boolean status;
     private LocalDate forMonth;
-
-
-
 }

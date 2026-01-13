@@ -34,7 +34,6 @@ public class AdminController implements Common<User, String, String, UserDto> {
     private final AdminService adminService;
     private final UserRepository userRepository;
 
-
     @Override
     @Operation(
             summary = "Create a new user",
@@ -50,7 +49,9 @@ public class AdminController implements Common<User, String, String, UserDto> {
         if (exist != null) {
             throw new UserAlreadyExistException("User already exists!");
         }
-        return adminService.create(user);
+         adminService.create(user);
+        user.setPassword("");
+        return  ResponseEntity.ok(user);
     }
 
 
@@ -73,7 +74,9 @@ public class AdminController implements Common<User, String, String, UserDto> {
         exist.setEnable(user.getEnable());
         exist.setPhoneNumber(user.getPhoneNumber());
         exist.setAttribute(user.getAttribute());
-        return adminService.update(exist, id);
+        adminService.update(exist, id);
+          exist.setPassword("");
+         return ResponseEntity.ok(exist);
     }
 
 
@@ -123,15 +126,13 @@ public class AdminController implements Common<User, String, String, UserDto> {
     }
 
  @GetMapping("find_by_username/{userName}")
-    public User findByUserName(@PathVariable("userName") String userName){
-
-     System.out.println("users "+userRepository.findByUserName(userName));
-        return  userRepository.findByUserName(userName);
+    public UserDto findByUserName(@PathVariable("userName") String userName){
+        return UserMapper.toDto(userRepository.findByUserName(userName));
 
  }
 
  @PutMapping("/reset")
- public ResponseEntity<User> update(@RequestBody User user) {
+ public ResponseEntity<UserDto> update(@RequestBody User user) {
      System.out.println("this is user data ...."+user);
      User exist = userRepository.findById(user.getId()).orElseThrow(
              () -> new UserAlreadyExistException("No user found with this ID: " + user.getId())
@@ -139,7 +140,7 @@ public class AdminController implements Common<User, String, String, UserDto> {
      exist.setPassword(passwordEncoder.encode(user.getPassword()));
      exist.setReset(user.getReset());
 
-     return adminService.update(exist, user.getId());
+     return ResponseEntity.ok(UserMapper.toDto(adminService.update(exist, user.getId()).getBody()));
 
  }
 
@@ -148,6 +149,17 @@ public class AdminController implements Common<User, String, String, UserDto> {
 
         return adminService.countAllUsers();
  }
+
+
+
+    @GetMapping("/search-by-username/{username}")
+    public Page<UserDto> searchByUsername(
+            @PathVariable String username,
+            Pageable pageable) {
+        return adminService.searchByUsername(username, pageable);
+    }
+
+
 
 
 

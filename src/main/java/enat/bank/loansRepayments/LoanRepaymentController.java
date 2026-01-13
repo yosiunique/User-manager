@@ -1,5 +1,7 @@
 package enat.bank.loansRepayments;
 
+import enat.bank.loan.Loan;
+import enat.bank.loan.LoanRepository;
 import enat.bank.utils.Common;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
@@ -21,11 +23,12 @@ import java.util.Optional;
 public class LoanRepaymentController implements Common<LoanRepayment, String, String, LoanRepayment> {
 
     private final LoanRepaymentService loanRepaymentService;
-
+   private final LoanRepository loanRepository;
     @Override
     @Operation(summary = "Create repayment record", description = "Creates a new saving or loan repayment record.")
     public ResponseEntity<LoanRepayment> create(@RequestBody LoanRepayment loanRepayment) {
-        return loanRepaymentService.create(loanRepayment);
+
+        return loanRepaymentService.create(loanRepaymentService.singleLoanRepaymnt(loanRepayment));
     }
 
     @Override
@@ -56,14 +59,14 @@ public class LoanRepaymentController implements Common<LoanRepayment, String, St
 
 
     @GetMapping("search-by-employee-id/{employeeId}")
-    public Page<LoanRepayment>  findByEmployeeIds(@PathVariable("employeeId") Long  employeeId , Pageable pageable){
-        return loanRepaymentService.findByEmployeeIds(employeeId,pageable);
+    public Page<LoanRepayment>  findByEmployeeIds(@PathVariable("employeeId") Long   loanId , Pageable pageable){
+        return loanRepaymentService.findByLoanIds(loanId,pageable);
 
     }
 
     @DeleteMapping("delete-by-employee-id/{employeeId}")
-    public void deleteByEmployeeId(@PathVariable("employeeId") Long  employeeId) {
-        loanRepaymentService.deleteByEmployeeId(employeeId);
+    public void deleteByEmployeeId(@PathVariable("employeeId") String  loanId) {
+        loanRepaymentService.deleteByLoanId(loanId);
     }
 
 
@@ -84,6 +87,23 @@ public class LoanRepaymentController implements Common<LoanRepayment, String, St
     public Double countAllLoanRepayments(){
         return loanRepaymentService.sumAllLoanRepayments();
     }
+
+
+
+
+    @GetMapping("data-uploading")
+    public List<LoanRepayment> updateFornow(){
+        List<Loan>  employee=loanRepository.findAll();
+
+        for (Loan l:employee){
+
+            loanRepaymentService.generateRepaymentsUpToNow(l.getEmployee().getEmployeeId());
+        }
+
+        return  null;
+    }
+
+
 
 
 }

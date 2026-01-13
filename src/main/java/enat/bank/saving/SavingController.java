@@ -1,10 +1,11 @@
 package enat.bank.saving;
 
+import enat.bank.employee.Employee;
+import enat.bank.employee.EmployeeRepository;
 import enat.bank.utils.Common;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import lombok.RequiredArgsConstructor;
-import org.springframework.cglib.core.Local;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -22,10 +23,13 @@ import java.util.Optional;
 public class SavingController implements Common<Saving, String, String, Saving> {
 
     private final SavingService savingService;
+    private final EmployeeRepository  employeeRepository ;
 
     @Override
     @Operation(summary = "Create repayment record", description = "Creates a new saving or loan repayment record.")
     public ResponseEntity<Saving> create(@RequestBody Saving saving) {
+        Employee employee=employeeRepository .findByEmployeeId(saving.getEmployee().getEmployeeId()).get();
+        saving.setEmployee(employee);
         return savingService.create(saving);
     }
 

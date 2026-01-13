@@ -1,6 +1,5 @@
 package enat.bank.loansRepayments;
-
-import enat.bank.Employee.Employee;
+import enat.bank.loan.Loan;
 import enat.bank.utils.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
@@ -25,17 +24,11 @@ public class LoanRepayment extends Auditable {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-
     @ManyToOne
-    @JoinColumn(name="employee_id")
-    private Employee employee;
-
-    private String fullName;
-
+    @JoinColumn(name="loan_id")
+    private Loan loan;
     private double principal;
     private double interset;
-
     private LocalDate forMonth;
-
     private double crassLoanRepayment;
 }

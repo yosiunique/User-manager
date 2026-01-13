@@ -11,7 +11,7 @@ import java.util.List;
 
 @Repository
 public interface SavingRepository extends CommonJpaRepo<Saving,Long> {
-    Page<Saving> findByEmployee_Id(Long  employeeId , Pageable pageable);
+    Page<Saving> findByEmployee_EmployeeId(Long  employeeId , Pageable pageable);
     List<Saving> deleteByEmployee_Id(Long employeeId);
     @Query("SELECT SUM(s.craSaving) FROM Saving s WHERE s.employee.id = :employeeId")
     Double findTotalSavingByEmployeeId(@Param("employeeId") Long employeeId);
