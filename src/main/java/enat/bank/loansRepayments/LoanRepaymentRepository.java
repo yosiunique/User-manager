@@ -15,11 +15,19 @@ public interface LoanRepaymentRepository extends CommonJpaRepo<LoanRepayment,Lon
     @Query("UPDATE LoanRepayment l SET l.deleted = true, l.deletedAt = CURRENT_TIMESTAMP WHERE l.loan.employee.id = :employeeId")
     void  deleteByLoan_Id(@Param("employeeId") String  loanId);
 
-    @Query("SELECT SUM(l.crassLoanRepayment) FROM LoanRepayment l WHERE l.loan.employee.id = :employeeId")
+    @Query("SELECT SUM(l.crassLoanRepayment) FROM LoanRepayment l WHERE  l.loan.employee.id = :employeeId")
     Double findTotalLoanRepaymentByEmployeeId(@Param("employeeId") Long employeeId);
 
     @Query("SELECT SUM(l.crassLoanRepayment) FROM LoanRepayment l")
     Double sumCrassLoanRepayment();
+
+
+    @Query("SELECT l  FROM LoanRepayment l WHERE  l.loan.employee.employeeFullName like :fullName")
+     Page<LoanRepayment>  findByFullName(@Param("fullName") String fullName ,Pageable pageable);
+
+
+    @Query("SELECT l FROM  LoanRepayment l ORDER BY l.loan.employee.employeeFullName")
+   Page<LoanRepayment> getAllLoanRepaymentPageable(Pageable pageable);
 
 
 }
