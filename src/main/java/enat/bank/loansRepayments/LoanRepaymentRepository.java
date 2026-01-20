@@ -22,7 +22,7 @@ public interface LoanRepaymentRepository extends CommonJpaRepo<LoanRepayment,Lon
     Double sumCrassLoanRepayment();
 
 
-    @Query("SELECT l  FROM LoanRepayment l WHERE  l.loan.employee.employeeFullName like :fullName")
+    @Query("SELECT l  FROM LoanRepayment l WHERE    LOWER( l.loan.employee.employeeFullName) like LOWER(CONCAT('%',:fullName ,'%'))")
      Page<LoanRepayment>  findByFullName(@Param("fullName") String fullName ,Pageable pageable);
 
 

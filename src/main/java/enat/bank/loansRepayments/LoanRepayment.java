@@ -6,6 +6,10 @@ import lombok.*;
 import org.hibernate.annotations.SQLDelete;
 import org.hibernate.annotations.Where;
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+
 import java.time.LocalDate;
 
 @EqualsAndHashCode(callSuper = true)
@@ -26,9 +30,11 @@ public class LoanRepayment extends Auditable {
     private Long id;
     @ManyToOne
     @JoinColumn(name="loan_id")
+    @JsonIgnoreProperties("repayments")
     private Loan loan;
     private double principal;
     private double interset;
     private LocalDate forMonth;
     private double crassLoanRepayment;
+    
 }
