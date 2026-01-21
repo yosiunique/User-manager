@@ -49,7 +49,7 @@ public class EmployeeController implements Common<Employee ,String,String,Employ
 
     @Override
     public Page<Employee> getAllPageable(Pageable pageable, String name) {
-        return employeeService.getAllPageable(pageable);
+        return employeeService.getAllPageable(pageable ,"employeeFullName");
     }
 
 
@@ -66,6 +66,12 @@ public class EmployeeController implements Common<Employee ,String,String,Employ
 
 
 
+    @GetMapping("/search-by-name/{name}")
+    public Page<Employee> searchByName(
+            @PathVariable("name") String name,
+            Pageable pageable) {
+        return employeeService.searchByName(name, pageable);
+    }
 
 
     @GetMapping("/search-by-employee-id/{employeeId}")

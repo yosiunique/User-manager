@@ -99,6 +99,10 @@ public class EmployeeService extends CommonService<Employee ,Long, Employee> {
         return employeeRepository.findByEmployeeIdContaining(employeeId ,pageable);
    }
 
+   public Page<Employee> searchByName(String name, Pageable pageable) {
+   return employeeRepository.findByEmployeeFullNameContaining(name, pageable);
+   }
+
 
 
 

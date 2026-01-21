@@ -3,7 +3,9 @@ package enat.bank.utils;
 import enat.bank.user.UserDto;
 import jakarta.transaction.Transactional;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 
@@ -23,6 +25,16 @@ public abstract class CommonService<E, ID, D> {
     public Page<E> getAllPageable(Pageable pageable) {
         return repository.findAll(pageable);
     }
+
+    public Page<E> getAllPageable(Pageable pageable, String sortedBy) {
+    Pageable sortedPageable = PageRequest.of(
+        pageable.getPageNumber(),
+        pageable.getPageSize(),
+        Sort.by(sortedBy).ascending()
+    );
+    
+    return repository.findAll(sortedPageable);
+}
 
     public ResponseEntity<E> create(E entity) {
         E saved = repository.save(entity);
