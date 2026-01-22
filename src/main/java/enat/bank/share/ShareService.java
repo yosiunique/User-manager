@@ -97,5 +97,8 @@ public class ShareService extends CommonService<Share ,Long ,Share> {
 
         return shareRepository.findByEmployeeEmployeeIdContaining(employeeId,pageable);
     }
+    public Page<Share> searchByName(String name, Pageable pageable){
+        return shareRepository.findByEmployeeEmployeeFullNameContaining(name ,pageable);
+    }
 
 }

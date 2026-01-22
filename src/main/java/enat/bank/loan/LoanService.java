@@ -155,4 +155,9 @@ public class LoanService extends CommonService<Loan, Long, Loan> {
         return loanRepository.findByEmployeeEmployeeIdContaining(employeeId ,pageable);
     }
 
+
+    Page<Loan> searchByName(String name, Pageable pageable){
+        return loanRepository.findByEmployeeEmployeeFullNameContaining(name ,pageable);
+    }
+
 }

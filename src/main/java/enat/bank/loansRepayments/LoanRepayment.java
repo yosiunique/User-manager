@@ -3,25 +3,20 @@ import enat.bank.loan.Loan;
 import enat.bank.utils.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
-import org.hibernate.annotations.SQLDelete;
-import org.hibernate.annotations.Where;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
-import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 import java.time.LocalDate;
 
 @EqualsAndHashCode(callSuper = true)
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity
 @Builder
 @Table(name = "loan_repayments")
-
-@Where(clause = "deleted = false")
-@SQLDelete(sql = "UPDATE loan_repayments SET deleted = true  ,updatedAt = ?  WHERE id =?")
 
 public class LoanRepayment extends Auditable {
 
@@ -30,7 +25,7 @@ public class LoanRepayment extends Auditable {
     private Long id;
     @ManyToOne
     @JoinColumn(name="loan_id")
-    @JsonIgnoreProperties("repayments")
+@JsonBackReference
     private Loan loan;
     private double principal;
     private double interset;

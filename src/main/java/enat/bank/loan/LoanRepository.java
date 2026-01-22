@@ -20,5 +20,7 @@ public interface LoanRepository extends CommonJpaRepo<Loan, Long> {
 
     @Query("SELECT l FROM  Loan l WHERE l.employee.employeeId=:employeeId")
     Page<Loan> findByEmployeeEmployeeIdContaining(@Param("employeeId") Long employeeId, Pageable pageable);
+     @Query("SELECT l FROM  Loan l WHERE l.employee.employeeFullName like CONCAT('%',:name,'%')   ORDER BY l.employee.employeeFullName ASC")
+    Page<Loan> findByEmployeeEmployeeFullNameContaining(@Param("name") String name, Pageable pageable);
 
 }

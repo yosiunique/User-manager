@@ -75,6 +75,13 @@ public class LoanController implements Common<Loan, Long, String, Loan> {
         return loanService.searchByEmployeeId(employeeId, pageable);
     }
 
+    @GetMapping("/search-by-name")
+    public Page<Loan> searchByName(
+            @RequestParam("name") String name,
+            Pageable pageable) {
+        return loanService.searchByName(name, pageable);
+                
+            }
 
 
 

@@ -1,7 +1,6 @@
 package enat.bank.employee;
 
 import com.opencsv.CSVReader;
-import enat.bank.utils.ApplicationProps;
 import enat.bank.utils.CommonService;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
@@ -17,11 +16,9 @@ import java.util.Optional;
 @Service
 public class EmployeeService extends CommonService<Employee ,Long, Employee> {
     private final  EmployeeRepository employeeRepository ;
-    private  final ApplicationProps applicationProps ;
-    public EmployeeService(EmployeeRepository employeeRepository ,ApplicationProps applicationProps){
+    public EmployeeService(EmployeeRepository employeeRepository ){
         super(employeeRepository);
         this.employeeRepository = employeeRepository;
-        this.applicationProps=applicationProps;
     }
 
     protected Optional<Employee>   findByEmployeeId(Long employeeId){
