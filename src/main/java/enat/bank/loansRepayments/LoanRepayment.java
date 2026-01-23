@@ -25,7 +25,7 @@ public class LoanRepayment extends Auditable {
     private Long id;
     @ManyToOne
     @JoinColumn(name="loan_id")
-@JsonBackReference
+@JsonIgnoreProperties("repayments")
     private Loan loan;
     private double principal;
     private double interset;
