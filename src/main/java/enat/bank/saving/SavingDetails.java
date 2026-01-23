@@ -2,13 +2,15 @@ package enat.bank.saving;
 
 import enat.bank.utils.Auditable;
 import jakarta.persistence.*;
-import lombok.*;
-
+import lombok.Getter;
+import lombok.Setter;
+import lombok.AllArgsConstructor;
+import lombok.NoArgsConstructor;   
+import lombok.Builder; 
 import java.time.LocalDate;
-import java.time.LocalDateTime;
 
-@EqualsAndHashCode(callSuper = true)
-@Data
+@Getter
+@Setter
 @AllArgsConstructor
 @NoArgsConstructor
 @Entity

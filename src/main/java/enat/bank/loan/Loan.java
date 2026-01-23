@@ -3,10 +3,17 @@ package enat.bank.loan;
 import enat.bank.employee.Employee;
 import enat.bank.employee.Status;
 import enat.bank.employee.StatusConverter;
+import enat.bank.loansRepayments.LoanRepayment;
 import jakarta.persistence.*;
 import lombok.*;
 
 import java.time.LocalDate;
+import java.util.List;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 
 
 @Builder
@@ -24,6 +31,7 @@ public class Loan {
     private String loanId;
     @ManyToOne()
     @JoinColumn(name = "employee_id")
+   @JsonIgnoreProperties({"loans", "savings"})
     private Employee employee;
     @Column(nullable = false)
     private LocalDate effectiveDate;
@@ -42,6 +50,9 @@ public class Loan {
     private Integer remainingPeriod;
     @Column(nullable = false)
     private double firstOutStanding;
+    @OneToMany(mappedBy = "loan", fetch = FetchType.LAZY)
+    @JsonManagedReference 
+    private List<LoanRepayment> repayments;
 
 
 }

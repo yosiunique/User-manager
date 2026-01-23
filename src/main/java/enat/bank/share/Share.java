@@ -4,12 +4,14 @@ import enat.bank.utils.Auditable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Data;
+import lombok.Setter;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
 @Table(name="share")
-@Data
+@Getter
+@Setter
 @Builder
 @AllArgsConstructor
 @NoArgsConstructor

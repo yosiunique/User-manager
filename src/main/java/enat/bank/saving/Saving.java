@@ -4,9 +4,10 @@ import enat.bank.employee.Employee;
 import enat.bank.utils.Auditable;
 import jakarta.persistence.*;
 import lombok.*;
-
-
 import java.time.LocalDate;
+
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 @EqualsAndHashCode(callSuper = true)
 @Data
@@ -21,6 +22,7 @@ public class Saving extends Auditable {
     private Long id;
     @ManyToOne
     @JoinColumn(name = "employee_id")
+   @JsonIgnoreProperties({"loans", "savings"})
     private Employee employee;
     private double   craSaving;
     private LocalDate forMonth;
