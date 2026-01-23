@@ -52,7 +52,7 @@ public class ShareController implements Common<Share, String, String, Share> {
 
     @Override
     public Page<Share> getAllPageable(Pageable pageable, String name) {
-        return shareService.getAllPageable(pageable);
+        return shareService.getAllPageable(pageable ,"employee.employeeFullName");
     }
 
 
@@ -67,5 +67,12 @@ public class ShareController implements Common<Share, String, String, Share> {
             Pageable pageable) {
         return shareService.search(employeeId, pageable);
     }
+
+    @GetMapping("/search-by-name")
+    public Page<Share> searchByName(
+            @RequestParam("name") String name,
+            Pageable pageable) {
+        return shareService .searchByName(name, pageable);
+            }
 
 }

@@ -121,7 +121,7 @@ public class AdminController implements Common<User, String, String, UserDto> {
             @PageableDefault Pageable pageable,
             @RequestParam(name = "name", required = false) String name) {
 
-        Page<User> users = adminService.getAllPageable(pageable);
+        Page<User> users = adminService.getAllPageable(pageable ,"firstName");
         return users.map(UserMapper::toDto);
     }
 

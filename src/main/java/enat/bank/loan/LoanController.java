@@ -57,7 +57,7 @@ public class LoanController implements Common<Loan, Long, String, Loan> {
     @Override
     @GetMapping
     public Page<Loan> getAllPageable(Pageable pageable, @RequestParam(required = false) String name) {
-        return loanService.getAllPageable(pageable);
+        return loanService.getAllPageable(pageable ,"employee.employeeFullName");
     }
 
     @PostMapping(value = "/import-csv", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -75,6 +75,13 @@ public class LoanController implements Common<Loan, Long, String, Loan> {
         return loanService.searchByEmployeeId(employeeId, pageable);
     }
 
+    @GetMapping("/search-by-name")
+    public Page<Loan> searchByName(
+            @RequestParam("name") String name,
+            Pageable pageable) {
+        return loanService.searchByName(name, pageable);
+                
+            }
 
 
 

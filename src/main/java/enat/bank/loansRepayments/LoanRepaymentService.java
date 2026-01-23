@@ -263,7 +263,7 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
               .principal(principal)
               .interset(interset)
               .forMonth(loanRepayment.getForMonth())
-              .crassLoanRepayment(loanRepayment.getCrassLoanRepayment())
+              .crassLoanRepayment(principal+interset)
               .build();
 
     loanRepository.save(loan);

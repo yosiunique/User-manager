@@ -15,4 +15,17 @@ public interface EmployeeRepository extends CommonJpaRepo<Employee ,Long> {
     @Query("SELECT e FROM  Employee e WHERE e.employeeId=:employeeId")
     Page<Employee> findByEmployeeIdContaining(@Param("employeeId") Long  employeeId, Pageable pageable);
 
+
+   @Query("""
+       SELECT e
+       FROM Employee e
+       WHERE LOWER(e.employeeFullName) LIKE LOWER(CONCAT('%', :name, '%'))
+       ORDER BY e.employeeFullName ASC
+       """)
+Page<Employee> findByEmployeeFullNameContaining(
+        @Param("name") String name,
+        Pageable pageable
+);
+
+
 }
