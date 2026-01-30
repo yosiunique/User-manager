@@ -16,7 +16,6 @@ import lombok.ToString;
 public class Roles {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false,unique = true)
     private Long id;
 
     @ManyToOne(fetch = FetchType.EAGER)
