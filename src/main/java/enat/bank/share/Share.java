@@ -17,12 +17,13 @@ import lombok.NoArgsConstructor;
 @NoArgsConstructor
 public class Share extends Auditable {
    @Id
-   @GeneratedValue(strategy = GenerationType.IDENTITY)
+   @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    @OneToOne
+    @ManyToOne
     @JoinColumn(name="employee_id")
     private Employee employee;
     private Double  share;
+    private String  remark;
     private Double  noOfShare;
 
 

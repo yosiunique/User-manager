@@ -22,11 +22,11 @@ public class ShareController implements Common<Share, String, String, Share> {
     @Override
     public ResponseEntity<Share> create(Share share)  {
 
-    if (shareService.getByEmployeeId(share.getEmployee().getEmployeeId()).isPresent()){
+    // if (shareService.getByEmployeeId(share.getEmployee().getEmployeeId()).isPresent()){
 
-        throw  new ShareException("this share already Registered !");
+    //     throw  new ShareException("this share already Registered !");
 
-    }
+    // }
     Employee employee=employeeRepository.findByEmployeeId(share.getEmployee().getEmployeeId()).get();
     share.setEmployee(employee);
     return  shareService.create(share);
@@ -56,9 +56,9 @@ public class ShareController implements Common<Share, String, String, Share> {
     }
 
 
-@PostMapping("import-csv")
-    public List<Share> importCsv(@RequestParam("file")  MultipartFile multipartFile){
-        return shareService.importCsv(multipartFile);
+@PostMapping("import-csv/{remark}")
+    public List<Share> importCsv(@RequestParam("file")  MultipartFile multipartFile ,@PathVariable("remark")String remark){
+        return shareService.importCsv(multipartFile ,remark);
 }
 
     @GetMapping("/search-by-employee-id/{employeeId}")

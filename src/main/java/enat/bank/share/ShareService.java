@@ -27,8 +27,8 @@ public class ShareService extends CommonService<Share ,Long ,Share> {
         this.shareRepository=shareRepository ;
         this. employeeRepositor=employeeRepository;
     }
-    public Optional<Share> getByEmployeeId(Long employeeId){
-        return  shareRepository.findByEmployee_EmployeeId(employeeId);
+    public Page<Share> getByEmployeeId(Long employeeId ,Pageable pageable){
+        return  shareRepository.findByEmployee_EmployeeId(employeeId , pageable);
     }
 
     protected Share updateShare(Long id , Share share)
@@ -45,7 +45,7 @@ public class ShareService extends CommonService<Share ,Long ,Share> {
 
 
 
-    public List<Share> importCsv(MultipartFile file){
+    public List<Share> importCsv(MultipartFile file ,String remark){
         List<Share> lsShare=new ArrayList<>();
         try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
             String[] fields;
@@ -66,9 +66,9 @@ public class ShareService extends CommonService<Share ,Long ,Share> {
                 Employee employee=employeeRepositor.findByEmployeeId(Long.valueOf(fields[0].trim())).get();
                 Share  share=Share.builder()
                         .employee(employee)
-//                        .totalSaving(parseDoubleSafe(fields[3].trim()))
-                        .noOfShare(parseDoubleSafe(fields[4].trim()))
-                        .share(parseDoubleSafe(fields[4].trim()))
+                        .remark(remark)
+                        .noOfShare(parseDoubleSafe(fields[1].trim()))
+                        .share(parseDoubleSafe(fields[1].trim()))
                         .build();
                 lsShare.add(share);
 

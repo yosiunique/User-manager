@@ -7,6 +7,7 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 
 import enat.bank.loan.Loan;
 import enat.bank.saving.Saving;
+import enat.bank.share.Share;
 import enat.bank.utils.Auditable;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
@@ -36,6 +37,9 @@ public class Employee extends Auditable {
     @JsonIgnore
     private List<Loan> loans;
 
+    @OneToMany(mappedBy =  "employee" ,fetch = FetchType.LAZY)
+     @JsonIgnore
+     private List<Share> shares ;
     @OneToMany(mappedBy = "employee", fetch = FetchType.LAZY)
     @JsonIgnore 
     private List<Saving> savings;
@@ -56,5 +60,12 @@ public class Employee extends Auditable {
         return savings.stream()
                 .mapToDouble(Saving::getCraSaving)
                 .sum();
+    }
+    @JsonProperty("totalShare")
+    public Double totalShare(){
+        if(shares==null) return 0.0;
+        return shares.stream()
+        .mapToDouble(Share::getNoOfShare)
+        .sum();
     }
 }
