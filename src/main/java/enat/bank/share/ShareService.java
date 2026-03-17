@@ -36,7 +36,6 @@ public class ShareService extends CommonService<Share ,Long ,Share> {
         Employee employee=employeeRepositor.findByEmployeeId(share.getEmployee().getEmployeeId()).get();
         update.setEmployee(employee);
         update.setNoOfShare(share.getNoOfShare());
-//        update.setTotalSaving(share.getTotalSaving());
         return update ;
     }
 
@@ -64,7 +63,7 @@ public class ShareService extends CommonService<Share ,Long ,Share> {
                lineNumber ++;
                 System.out.println("line Number: "+lineNumber +"  employeeID ..." +parseLongSafe(fields[0].trim() )+"    share:"+parseDoubleSafe(fields[1].trim()));
                 final String employeeID=fields[0].trim();
-                if (!employeeID.isEmpty()||!employeeID.isBlank()||!employeeID.equals("")){
+                if(!employeeID.trim().isEmpty()){
                 Employee employee = employeeRepositor
                         .findByEmployeeId(parseLongSafe(fields[0].trim()))
                         .orElseThrow(() -> new RuntimeException(
@@ -91,19 +90,37 @@ public class ShareService extends CommonService<Share ,Long ,Share> {
 
 
     private Double parseDoubleSafe(String value) {
+
         try {
-            return Double.parseDouble(value.replace(",", "").trim());
-        } catch (Exception e) {
-            return 0.0;
+            if (value == null || value.trim().isEmpty()) {
+                throw new RuntimeException("Value is null or empty");
+            }
+
+            String cleanedValue = value.replace(",", "").trim();
+
+            return Double.parseDouble(cleanedValue);
+
+        } catch (NumberFormatException e) {
+            throw new RuntimeException("Invalid number format: " + value);
         }
+
     }
 
     private Long parseLongSafe(String value) {
-        try {
-            return Long.parseLong(value.replace(",", "").trim());
-        } catch (Exception e) {
-            return 0L;
-        }
+                     try {
+     if (value == null || value.trim().isEmpty()) {
+         throw new RuntimeException("Value is null or empty");
+     }
+     String cleanedValue = value.replace(",", "").trim();
+
+     return Long.parseLong(cleanedValue);
+
+ }
+ catch (NumberFormatException e){
+
+     throw  new RuntimeException("Invalid number format:"+value) ;
+ }
+
     }
 
 
