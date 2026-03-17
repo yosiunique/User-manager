@@ -61,7 +61,7 @@ public class ShareService extends CommonService<Share ,Long ,Share> {
                     continue; // skip headers
                 }
                lineNumber ++;
-                System.out.println("line Number: "+lineNumber +"  employeeID ..." +parseLongSafe(fields[0].trim() )+"    share:"+parseDoubleSafe(fields[1].trim()));
+                System.out.println("line Number: "+lineNumber +"  employeeID ..." +fields[0].trim() +"    share:"+fields[1].trim());
                 final String employeeID=fields[0].trim();
                 if(!employeeID.trim().isEmpty()){
                 Employee employee = employeeRepositor
