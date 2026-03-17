@@ -45,6 +45,7 @@ public class ShareService extends CommonService<Share ,Long ,Share> {
 
 
     public List<Share> importCsv(MultipartFile file ,String remark){
+
         List<Share> lsShare=new ArrayList<>();
         try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
             String[] fields;
@@ -60,9 +61,15 @@ public class ShareService extends CommonService<Share ,Long ,Share> {
                     isFirst = false;
                     continue; // skip headers
                 }
+               lineNumber ++;
+                System.out.println("line Number: "+lineNumber +"  employeeID ..." +parseLongSafe(fields[0].trim() )+"    share:"+parseDoubleSafe(fields[1].trim()));
+                final String employeeID=fields[0].trim();
+                if (!employeeID.isEmpty()||!employeeID.isBlank()||!employeeID.equals("")){
+                Employee employee = employeeRepositor
+                        .findByEmployeeId(parseLongSafe(fields[0].trim()))
+                        .orElseThrow(() -> new RuntimeException(
+                                "Employee not found with ID: " + employeeID));
 
-
-                Employee employee=employeeRepositor.findByEmployeeId(Long.valueOf(fields[0].trim())).get();
                 Share  share=Share.builder()
                         .employee(employee)
                         .remark(remark)
@@ -71,7 +78,7 @@ public class ShareService extends CommonService<Share ,Long ,Share> {
                         .build();
                 lsShare.add(share);
 
-            }
+            }}
 
             return   shareRepository.saveAll(lsShare);
 
@@ -88,6 +95,14 @@ public class ShareService extends CommonService<Share ,Long ,Share> {
             return Double.parseDouble(value.replace(",", "").trim());
         } catch (Exception e) {
             return 0.0;
+        }
+    }
+
+    private Long parseLongSafe(String value) {
+        try {
+            return Long.parseLong(value.replace(",", "").trim());
+        } catch (Exception e) {
+            return 0L;
         }
     }
 
