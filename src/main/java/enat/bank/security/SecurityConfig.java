@@ -38,13 +38,14 @@ public class SecurityConfig {
     public SecurityFilterChain securityFilterChain(HttpSecurity http) throws Exception {
         http
                 .cors(withDefaults()) // Enable CORS
-                .csrf().disable()     // Disable CSRF for API
+                .csrf(csrf -> csrf.disable())     // Disable CSRF for API
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
                                 "/swagger-ui/index.html",
+                                "/actuator/*",
                                 "/api/auth/**").permitAll()
                         .anyRequest().authenticated())
                 .sessionManagement(sess -> sess.sessionCreationPolicy(SessionCreationPolicy.STATELESS))

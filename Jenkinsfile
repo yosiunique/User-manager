@@ -16,6 +16,28 @@ pipeline {
     }
     agent any
     stages {
+
+
+
+       stage('SCM') {
+           steps {
+               checkout scm
+           }
+       }
+
+       stage('SonarQube Analysis') {
+           steps {
+               withSonarQubeEnv("Enat Sonar") {
+                   sh "mvn clean verify org.sonarsource.scanner.maven:sonar-maven-plugin:sonar -Dsonar.projectKey=dev-team_savingandloan-repayments_909c668c-f5e2-4b6c-adc8-3e833d6311e8 -Dsonar.projectName='SavingandLoan-Repayments'"
+               }
+           }
+       }
+
+
+
+
+
+
         stage("Build") {
             steps {
                 sh "mvn -version"
@@ -41,9 +63,11 @@ pipeline {
         }
         stage("Deliver for development") {
             when {
-//                  expression {
-//                            return env.BRANCH_NAME ==~ /(feature|develop)\/.*/
-//                        }
+                 expression {
+                           return env.BRANCH_NAME == 'develop' ||
+                                               env.BRANCH_NAME.startsWith('feature/')
+
+                       }
 
                        branch "develop"
             }
@@ -52,7 +76,7 @@ pipeline {
                 sh 'ssh -o StrictHostKeyChecking=no -l  ${TEST_SERVER_USERNAME} ${TEST_SERVER_ADDRESS} \
                  "docker stop aloan-repayment || true; \
                  docker rm aloan-repayment || true; \
-                 docker run -p 8061:8080 \
+                 docker run -p 8061:8080 --add-host host.docker.internal:host-gateway  \
                    -v /mnt/loan:/var/storage \
                    -e SPRING_PROFILES_ACTIVE=develop \
                    -d --name aloan-repayment \
@@ -66,7 +90,7 @@ pipeline {
             }
             steps {
                 sshagent(['enat-remedy-production']) {
-                    sh 'ssh -o StrictHostKeyChecking=no -l  ${PRODUCTION_SERVER_USERNAME} ${PRODUCTION_SERVER_ADDRESS} "docker stop loan-repayment | true;     docker rm loan-repayment | true;     docker run -p 8061:8080 -v /mnt/loan:/var/storage -e "SPRING_PROFILES_ACTIVE=live" -d --name loan-repayment ${DOCKER_PRIVATE_REGISTRY}/loan-repayment:${TAG}"'
+                    sh 'ssh -o StrictHostKeyChecking=no -l  ${PRODUCTION_SERVER_USERNAME} ${PRODUCTION_SERVER_ADDRESS} "docker stop loan-repayment | true;     docker rm loan-repayment | true;     docker run -p 8061:8080 --add-host host.docker.internal:host-gateway  "SPRING_PROFILES_ACTIVE=live" -d --name loan-repayment ${DOCKER_PRIVATE_REGISTRY}/loan-repayment:${TAG}"'
                 }
             }
         }
