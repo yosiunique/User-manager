@@ -4,7 +4,7 @@ package enat.bank.utils;
 import enat.bank.user.User;
 import io.jsonwebtoken.*;
 import io.jsonwebtoken.security.Keys;
-import org.springframework.beans.factory.annotation.Autowired;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import java.security.Key;
@@ -13,12 +13,12 @@ import java.util.List;
 import java.util.Map;
 
 @Service
+@RequiredArgsConstructor
 public class JwtService {
    @Value("${application.jwt_expiration_time}")
    long timeOut;
-   @Autowired
-   private ApplicationProps applicationProps;
 
+   private  final ApplicationProps applicationProps;
     private Key getSigningKey() {
         return Keys.hmacShaKeyFor(applicationProps.getJwt_secret_key().getBytes());
     }

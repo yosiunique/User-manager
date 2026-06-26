@@ -16,6 +16,7 @@ public class GlobalExceptionHandler {
 
         if (ex instanceof UserAlreadyExistException) {
             response.setError("User error");
+
         }
         else if (ex instanceof SavingAndLoanRepaymentSaveFileException) {
             response.setError("Saving Error");
