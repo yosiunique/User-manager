@@ -11,6 +11,7 @@ import enat.bank.loan.LoanRepository;
 import enat.bank.utils.ApplicationProps;
 import enat.bank.utils.CommonService;
 import jakarta.transaction.Transactional;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -24,7 +25,7 @@ import java.time.YearMonth;
 import java.util.ArrayList;
 import java.util.List;
 
-
+@Log4j2
 @Service
 public class LoanRepaymentService extends CommonService<LoanRepayment,Long,String> {
     private final ApplicationProps applicationProps ;
@@ -49,7 +50,7 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
         List<LoanRepayment> dataList = new ArrayList<>();
         List<Loan> lsLoan=new ArrayList<>();
         LocalDate lastMonth=LocalDate.now().minusMonths(1);
-        System.out.println("This Month:"+lastMonth);
+    log.info("This Month: {} ",lastMonth);
         try (CSVReader reader = new CSVReader(new InputStreamReader(file.getInputStream(), StandardCharsets.UTF_8))) {
             String[] fields;
             boolean isFirst = true;
@@ -67,7 +68,7 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
                 }
 
                 for (String field : fields) {
-                    System.out.println("fields :"+field);
+                    log.info("fields : {}" ,field);
 
                 }
                 /***
@@ -101,22 +102,22 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
                      interset = loan.getOutStanding() * rate;
                      principal = emi - interset;
                      remainningBalance = loan.getOutStanding() - principal;
-                    System.out.println("outStand:..." + loan.getOutStanding());
-                    System.out.println("rate:..." + rate);
-                    System.out.println("Monthly:..." + emi);
-                    System.out.println("interset:.." + interset);
-                    System.out.println("princpal:.." + principal);
-                    System.out.println("remaining Balance:....." + remainningBalance);
+                    log.info(" outStand:... {}" ,loan.getOutStanding());
+                    log.info("rate :... {}" , rate);
+                    log.info("Monthly:... {}" ,emi);
+                    log.info("interset:...{}" , interset);
+                    log.info("princpal:.. {}" , principal);
+                    log.info("remaining Balance:..... {}" ,remainningBalance);
                     loan.setOutStanding(remainningBalance);
                     loan.setEmi(emi);
                    loan.setRemainingPeriod(loan.getRemainingPeriod()-1);
                 } else{
-                    System.out.println("outStand:..." + loan.getOutStanding());
-                    System.out.println("rate:..." + rate);
-                    System.out.println("Monthly:..." + loan.getEmi());
-                    System.out.println("interset:.." + loan.getOutStanding()*rate);
-                    System.out.println("princpal:.." + (loan.getEmi()-(loan.getOutStanding()*rate)));
-                    System.out.println("remaining Balance:....." + (loan.getOutStanding()-(loan.getEmi()-(loan.getOutStanding()*rate))));
+                    log.info("outStand:...{}" , loan.getOutStanding());
+                    log.info("rate:... {}" ,  rate);
+                    log.info(" Monthly:...{}" , loan.getEmi());
+                    log.info(" interset:.. {}" , loan.getOutStanding()*rate);
+                    log.info(" princpal:.. {}" ,(loan.getEmi()-(loan.getOutStanding()*rate)));
+                    log.info(" remaining Balance:..... {}",(loan.getOutStanding()-(loan.getEmi()-(loan.getOutStanding()*rate))));
                     loan.setOutStanding((loan.getOutStanding()-(loan.getEmi()-(loan.getOutStanding()*rate))));
                    loan.setRemainingPeriod(loan.getRemainingPeriod()-1);
                    emi = loan.getEmi();
@@ -217,7 +218,7 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
 
 
   public LoanRepayment singleLoanRepaymnt(LoanRepayment loanRepayment){
-      System.out.println("loan Repayments :"+loanRepayment);
+      log.info("loan Repayments :"+loanRepayment);
       Loan loan=loanRepository.findByEmployee_EmployeeIdAndStatus(loanRepayment.getLoan().getEmployee().getEmployeeId(),Status.ACTIVE);
        double rate = loan.getAnnualInterest() / applicationProps.getAnnualPeriod();
       double emi=0;
@@ -235,22 +236,22 @@ public class LoanRepaymentService extends CommonService<LoanRepayment,Long,Strin
           interset = loan.getOutStanding() * rate;
           principal = emi - interset;
           remainningBalance = loan.getOutStanding() - principal;
-          System.out.println("outStand:..." + loan.getOutStanding());
-          System.out.println("rate:..." + rate);
-          System.out.println("Monthly:..." + emi);
-          System.out.println("interset:.." + interset);
-          System.out.println("princpal:.." + principal);
-          System.out.println("remaining Balance:....." + remainningBalance);
+          log.info(" outStand :... {}" , loan.getOutStanding());
+          log.info(" rate:... {}" ,rate);
+          log.info(" Monthly:... {}" , emi);
+          log.info(" interset:.. {} " , interset);
+          log.info(" princpal:.. {} " ,principal);
+          log.info(" remaining Balance:..... {}" ,remainningBalance);
           loan.setOutStanding(remainningBalance);
           loan.setEmi(emi);
           loan.setRemainingPeriod(loan.getRemainingPeriod()-1);
       } else{
-          System.out.println("outStand:..." + loan.getOutStanding());
-          System.out.println("rate:..." + rate);
-          System.out.println("Monthly:..." + loan.getEmi());
-          System.out.println("interset:.." + loan.getOutStanding()*rate);
-          System.out.println("princpal:.." + (loan.getEmi()-(loan.getOutStanding()*rate)));
-          System.out.println("remaining Balance:....." + (loan.getOutStanding()-(loan.getEmi()-(loan.getOutStanding()*rate))));
+          log.info("outStand:... {}" , loan.getOutStanding());
+          log.info("rate:... {}" , rate);
+          log.info("Monthly:... {}" , loan.getEmi());
+          log.info("interset:.. {}" , loan.getOutStanding()*rate);
+          log.info("princpal:.. {}" , (loan.getEmi()-(loan.getOutStanding()*rate)));
+          log.info("remaining Balance:..... {}" , (loan.getOutStanding()-(loan.getEmi()-(loan.getOutStanding()*rate))));
           loan.setOutStanding((loan.getOutStanding()-(loan.getEmi()-(loan.getOutStanding()*rate))));
          loan.setRemainingPeriod(loan.getRemainingPeriod()-1);
           emi = loan.getEmi();

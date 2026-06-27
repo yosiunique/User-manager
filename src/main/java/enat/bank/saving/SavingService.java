@@ -8,6 +8,7 @@ import enat.bank.exception.SavingAndLoanRepaymentSaveFileException;
 import enat.bank.utils.CommonService;
 import enat.bank.exception.SavingAndLoanRepaymentsNotFoundException;
 import jakarta.transaction.Transactional;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.http.ResponseEntity;
@@ -21,6 +22,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
+@Log4j2
 @Service
 public class SavingService extends CommonService<Saving,Long,String > {
     private final String[] header={"employeeId","fullName","craSaving" };
@@ -55,7 +57,7 @@ public class SavingService extends CommonService<Saving,Long,String > {
 //                        throw new SavingAndLoanRepaymentSaveFileException("invalid header pls Enter valid headers Name !");
 //                    }
 
-                    System.err.println("headers"+fields);
+                    log.error("headers ..{} " ,fields);
                     isFirst=false;
                     continue;
                 }

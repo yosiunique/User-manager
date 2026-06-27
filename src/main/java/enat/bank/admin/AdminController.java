@@ -7,6 +7,7 @@ import enat.bank.user.UserRepository;
 import enat.bank.utils.Common;
 import enat.bank.exception.UserAlreadyExistException;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
@@ -28,6 +29,7 @@ import java.util.Optional;
         name = "User Management (Admin)",
         description = "Provides CRUD operations for managing system users including create, update, delete, and fetch user details."
 )
+@Log4j2
 public class AdminController implements Common<User, String, String, UserDto> {
 
     private final PasswordEncoder passwordEncoder;
@@ -133,7 +135,7 @@ public class AdminController implements Common<User, String, String, UserDto> {
 
  @PutMapping("/reset")
  public ResponseEntity<UserDto> update(@RequestBody User user) {
-     System.out.println("this is user data ...."+user);
+    log.info("this is user data ....{}",user.getUserName());
      User exist = userRepository.findById(user.getId()).orElseThrow(
              () -> new UserAlreadyExistException("No user found with this ID: " + user.getId())
      );

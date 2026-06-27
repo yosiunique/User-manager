@@ -6,6 +6,7 @@ import enat.bank.employee.Employee;
 import enat.bank.employee.EmployeeRepository;
 import enat.bank.exception.SavingAndLoanRepaymentSaveFileException;
 import enat.bank.utils.CommonService;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
@@ -17,6 +18,7 @@ import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 
+@Log4j2
 @Service
 public class ShareService extends CommonService<Share ,Long ,Share> {
     private final ShareRepository shareRepository;
@@ -61,7 +63,7 @@ public class ShareService extends CommonService<Share ,Long ,Share> {
                     continue; // skip headers
                 }
                lineNumber ++;
-                System.out.println("line Number: "+lineNumber +"  employeeID ..." +fields[0].trim() +"    share:"+fields[1].trim());
+                log.info("line Number: ",lineNumber ," employeeID ...{}" ,fields[0].trim() ,"    share:",fields[1].trim());
                 final String employeeID=fields[0].trim();
                 if(!employeeID.trim().isEmpty()){
                 Employee employee = employeeRepositor
