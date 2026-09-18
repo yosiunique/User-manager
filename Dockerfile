@@ -15,7 +15,7 @@ LABEL maintainer="Fentahun Amare and Yoseph Getachew <getachewy307@gmail.com>"
 ENV TZ=Africa/Addis_Ababa
 ENV SPRING_PROFILES_ACTIVE=develop
 ENV PORT=8080
-
+#db startted
 WORKDIR /home/spring
 
 RUN mkdir -p /home/loanRepayment/logs \
