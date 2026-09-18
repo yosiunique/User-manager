@@ -1,5 +1,5 @@
 
-FROM maven:3.9-amazoncorretto-21-al2023
+FROM maven:3.9-amazoncorretto-21-al2023 AS builder
 WORKDIR /build
 
 # Copy your project files and build the jar (replacing your Jenkins steps)
@@ -8,7 +8,7 @@ COPY src ./src
 RUN mvn -version && mvn clean install -DskipTests
 
 
-FROM maven:3.9-amazoncorretto-21-al2023 AS builder
+FROM maven:3.9-amazoncorretto-21-al2023
 MAINTAINER Fentahun Amare and Yoseph Getachew <getachewy307@gmail.com>
 ENV TZ=Africa/Addis_Ababa
 # Copy your project files and build the jar (replacing your Jenkins steps)
