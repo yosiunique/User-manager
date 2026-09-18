@@ -28,7 +28,7 @@ public abstract class Auditable implements Serializable {
 
     @Schema(hidden = true)
     @Column(name = "deleted")
-    private boolean deleted = false;
+    private Boolean deleted = false;
 
     @Schema(hidden = true)
     @Column(name = "deleted_by")
@@ -56,6 +56,6 @@ public abstract class Auditable implements Serializable {
 
     @Version
     @Column(name = "version")
-    private long version;
+    private Long version;
 }
 

@@ -1,42 +1,14 @@
 package enat.bank.user;
 
-import java.util.stream.Collectors;
 
-public class UserMapper {
+import org.mapstruct.Mapper;
 
-    public static UserDto toDto(User user) {
-        if (user == null) return null;
+@Mapper(componentModel = "spring")
+public interface UserMapper{
 
-        UserDto dto = new UserDto();
-        dto.setId(user.getId());
-        dto.setFirstName(user.getFirstName());
-        dto.setLastName(user.getLastName());
-        dto.setUserName(user.getUserName());
-        dto.setEmail(user.getEmail());
-        dto.setPhoneNumber(user.getPhoneNumber());
-        dto.setAttribute(user.getAttribute());
-        dto.setEnable(user.getEnable());
-        dto.setRole(user.getRoles());
-        return dto;
-    }
 
-    public static User toEntity(UserDto dto) {
-        if (dto == null) return null;
+    UserDto toDto(User user);
+    User toEntity(UserDto userDto) ;
 
-        User user = new User();
-        user.setId(dto.getId());
-        user.setFirstName(dto.getFirstName());
-        user.setLastName(dto.getLastName());
-        user.setUserName(dto.getUserName());
-        user.setEmail(dto.getEmail());
-        user.setPhoneNumber(dto.getPhoneNumber());
-        user.setAttribute(dto.getAttribute());
-        user.setEnable(dto.getEnable());
-        user.setRoles(dto.getRole());
-        return user;
-    }
 
-    public static java.util.List<UserDto> toDtoList(java.util.List<User> users) {
-        return users.stream().map(UserMapper::toDto).collect(Collectors.toList());
-    }
 }

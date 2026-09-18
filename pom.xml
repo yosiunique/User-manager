@@ -29,6 +29,10 @@
     <properties>
         <java.version>21</java.version>
         <lombok.version>1.18.46</lombok.version>
+
+        <org.mapstruct.version>1.6.3</org.mapstruct.version> <!-- Use the latest version -->
+        <org.projectlombok.version>1.18.36</org.projectlombok.version> <!-- If using Lombok -->
+
     </properties>
     <dependencyManagement>
         <dependencies>
@@ -85,6 +89,12 @@
 
 
         <dependency>
+            <groupId>org.mapstruct</groupId>
+            <artifactId>mapstruct</artifactId>
+            <version>${org.mapstruct.version}</version>
+        </dependency>
+
+        <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-data-jpa</artifactId>
         </dependency>
@@ -126,20 +136,12 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-webmvc</artifactId>
         </dependency>
+        <dependency>
 
-
-
-<!--        <dependency>-->
-
-<!--            <groupId>com.mysql</groupId>-->
-<!--            <artifactId>mysql-connector-j</artifactId>-->
-<!--            <scope>runtime</scope>-->
-<!--        </dependency>-->
-               <dependency>
-                   <groupId>com.microsoft.sqlserver</groupId>
-                   <artifactId>mssql-jdbc</artifactId>
-                   <scope>runtime</scope>
-               </dependency>
+            <groupId>com.mysql</groupId>
+            <artifactId>mysql-connector-j</artifactId>
+            <scope>runtime</scope>
+        </dependency>
         <dependency>
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-test</artifactId>
@@ -210,6 +212,25 @@
                             <artifactId>lombok</artifactId>
                             <version>${lombok.version}</version>
                         </path>
+
+                            <!-- MapStruct Annotation Processor -->
+                            <path>
+                                <groupId>org.mapstruct</groupId>
+                                <artifactId>mapstruct-processor</artifactId>
+                                <version>${org.mapstruct.version}</version>
+                            </path>
+                            <!-- Lombok Processor (Must be BEFORE MapStruct if used) -->
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok</artifactId>
+                                <version>${org.projectlombok.version}</version>
+                            </path>
+                            <!-- Lombok-MapStruct Binding (Required if using Lombok) -->
+                            <path>
+                                <groupId>org.projectlombok</groupId>
+                                <artifactId>lombok-mapstruct-binding</artifactId>
+                                <version>0.2.0</version>
+                            </path>
                     </annotationProcessorPaths>
                 </configuration>
             </plugin>

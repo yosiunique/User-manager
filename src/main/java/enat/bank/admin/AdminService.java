@@ -10,10 +10,12 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 @Service
 public class AdminService extends CommonService<User,Long ,String> {
+    private final UserMapper userMapper;
     private UserRepository userRepository;
-    public AdminService(UserRepository userRepository ) {
+    public AdminService(UserRepository userRepository, UserMapper userMapper) {
         super(userRepository);
         this.userRepository=userRepository;
+        this.userMapper = userMapper;
     }
 
 
@@ -26,7 +28,7 @@ public class AdminService extends CommonService<User,Long ,String> {
 
         Page<User>  users=userRepository.findByUserNameContainingIgnoreCase(username ,pageable);
 
-        return  users.map(UserMapper::toDto);
+        return  users.map(userMapper::toDto);
   }
 
 }

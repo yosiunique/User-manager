@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 
@@ -35,7 +36,7 @@ public class AdminController implements Common<User, String, String, UserDto> {
     private final PasswordEncoder passwordEncoder;
     private final AdminService adminService;
     private final UserRepository userRepository;
-
+    private final UserMapper userMapper ;
     @Override
     @Operation(
             summary = "Create a new user",
@@ -107,7 +108,7 @@ public class AdminController implements Common<User, String, String, UserDto> {
     })
     public Optional<UserDto> getById(@PathVariable Long id) {
         Optional<User> user = adminService.getById(id);
-        return user.map(UserMapper::toDto);
+        return user.map(userMapper::toDto);
     }
 
 
@@ -124,12 +125,12 @@ public class AdminController implements Common<User, String, String, UserDto> {
             @RequestParam(name = "name", required = false) String name) {
 
         Page<User> users = adminService.getAllPageable(pageable ,"firstName");
-        return users.map(UserMapper::toDto);
+        return users.map(userMapper::toDto);
     }
 
  @GetMapping("find_by_username/{userName}")
     public UserDto findByUserName(@PathVariable("userName") String userName){
-        return UserMapper.toDto(userRepository.findByUserName(userName));
+        return userMapper.toDto(userRepository.findByUserName(userName));
 
  }
 
@@ -142,7 +143,7 @@ public class AdminController implements Common<User, String, String, UserDto> {
      exist.setPassword(passwordEncoder.encode(user.getPassword()));
      exist.setReset(user.getReset());
 
-     return ResponseEntity.ok(UserMapper.toDto(adminService.update(exist, user.getId()).getBody()));
+     return ResponseEntity.ok(userMapper.toDto(adminService.update(exist, user.getId()).getBody()));
 
  }
 

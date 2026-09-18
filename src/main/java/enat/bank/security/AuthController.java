@@ -12,9 +12,11 @@ import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import jakarta.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.log4j.Log4j2;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.*;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.web.bind.annotation.*;
 import java.time.LocalDateTime;
 import java.util.Map;
@@ -26,11 +28,13 @@ import java.util.Map;
         name = "Authentication",
         description = "Handles user authentication and JWT token generation for secured access."
 )
+@Log4j2
 public class AuthController {
    private  final UserRepository userRepository;
     private final AuthenticationManager authManager;
     private final JwtService jwtService;
     private final UserLoginRepo userLoginRepo;
+    private final PasswordEncoder passwordEncoder;
 
     @PostMapping("/login")
     @Operation(
@@ -57,6 +61,8 @@ public class AuthController {
     )
     public Map<String, String> login(@RequestBody User user) {
 
+
+        log.info(passwordEncoder.encode(user.getPassword()));
         Authentication authentication=authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         user.getUserName(),
