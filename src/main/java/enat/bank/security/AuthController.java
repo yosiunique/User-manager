@@ -62,7 +62,7 @@ public class AuthController {
     public Map<String, String> login(@RequestBody User user) {
 
 
-        log.info(passwordEncoder.encode(user.getPassword()));
+        log.info("Password encodes {}",passwordEncoder.encode(user.getPassword()));
         Authentication authentication=authManager.authenticate(
                 new UsernamePasswordAuthenticationToken(
                         user.getUserName(),
