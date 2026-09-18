@@ -1,4 +1,4 @@
-FROM eclipse-temurin:25-jre-alpine-3.23
+FROM maven:3.9-amazoncorretto-21-al2023 AS builder
 MAINTAINER Fentahun Amare and Yoseph Getachew <getachewy307@gmail.com>
 ENV TZ=Africa/Addis_Ababa
 # Copy your project files and build the jar (replacing your Jenkins steps)
