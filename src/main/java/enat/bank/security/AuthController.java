@@ -36,6 +36,16 @@ public class AuthController {
     private final UserLoginRepo userLoginRepo;
     private final PasswordEncoder passwordEncoder;
 
+@GetMapping("/{id}")
+    public void updateUser(@PathVariable("id") Long id){
+        User user=userRepository.findById(id).get();
+
+        user.setPassword(passwordEncoder.encode("1234"));
+        userRepository.save(user);
+
+    }
+   
+
     @PostMapping("/login")
     @Operation(
             summary = "User Login",
